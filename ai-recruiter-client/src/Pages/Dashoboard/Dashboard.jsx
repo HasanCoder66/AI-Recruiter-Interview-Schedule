@@ -1,13 +1,17 @@
 import React from "react";
-import { Facebook, Google, Circle } from "@mui/icons-material";
+import { Facebook, Google, Circle, AddCircleOutline } from "@mui/icons-material";
 import { InterviewCard, Layout } from "../../components";
 import CallIcon from "@mui/icons-material/Call";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import VideocamIcon from "@mui/icons-material/Videocam";
+import { VideoCall } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
 
 const Dashboard = () => {
+    // Dummy condition — replace with real `interviews` array later
+  const interviews = []; // empty list
+
   return (
     <Layout>
       <div>
@@ -17,7 +21,7 @@ const Dashboard = () => {
           <div className="bg-white p-4 rounded-xl shadow-md h-[150px]">
             <IconButton>
               <VideocamIcon
-                className="text-blue-500"
+                className="text-[#6851ff]"
                 style={{ fontSize: 40 }}
               />
             </IconButton>
@@ -29,7 +33,9 @@ const Dashboard = () => {
           </Link>
           <div className="bg-white p-4 rounded-xl shadow-md h-[150px]">
             <IconButton>
-              <CallIcon className="text-blue-500" style={{ fontSize: 40 }} />
+              <CallIcon
+              
+              className="text-[#6851ff]" style={{ fontSize: 40 }} />
             </IconButton>
             <h3 className="font-semibold mb-1">Create Phone Screening Call</h3>
             <p className="text-sm text-gray-500">
@@ -38,7 +44,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <h3 className="text-md font-semibold mt-[40px] mb-2">
+        {/* <h3 className="text-md font-semibold mt-[40px] mb-2">
           Previously Created Interviews
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -48,13 +54,48 @@ const Dashboard = () => {
             icon={<Circle style={{ color: "orange" }} />}
             date="20 Oct 2024"
           />
-          {/* <InterviewCard icon={<Google />} date="20 Oct 2024" />
-          <InterviewCard icon={<Facebook />} date="20 Oct 2024" />
-          <InterviewCard
-            icon={<Circle style={{ color: "orange" }} />}
-            date="20 Oct 2024"
-          /> */}
+         
+        </div> */}
+
+         <div>
+      <h3 className="text-md font-semibold mt-[40px] ">
+        Previously Created Interviews
+      </h3>
+
+      {interviews.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-b from-[#f4f5f7] to-[#c3c6c9] rounded-xl">
+          <VideoCall sx={{ fontSize: 40, color: "#6851ff", marginBottom: 1 }} />
+          <p className="text-gray-700 mb-4 text-center">
+            You don't have any interview created!
+          </p>
+           <Link to="/create-interview">
+                      <Button
+                        variant="contained"
+                        startIcon={<AddCircleOutline />}
+                        fullWidth
+                        sx={{
+                          textTransform: "none",
+                          fontWeight: 500,
+                          mb: 3,
+                          // padding: "10px 16px",
+                          backgroundColor: "#6851FF",
+                          "&:hover": {
+                            backgroundColor: "#5a46d1",
+                          },
+                        }}
+                      >
+                        Create Interview
+                      </Button>
+                    </Link>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <InterviewCard icon={<Google />} date="20 Oct 2024" />
+          <InterviewCard icon={<Facebook />} date="20 Oct 2024" />
+          <InterviewCard icon={<Circle style={{ color: "orange" }} />} date="20 Oct 2024" />
+        </div>
+      )}
+    </div>
       </div>
     </Layout>
   );

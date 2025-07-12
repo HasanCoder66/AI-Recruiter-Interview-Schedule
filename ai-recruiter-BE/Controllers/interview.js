@@ -3,7 +3,7 @@
 import Interview from "../Models/interview.js";
 import { generateWithOpenAI } from "../Services/openai.js";
 
-export const generateInterviewQustions = async (req, res) => {
+export const CreateInterviewAndGenerateQuestions = async (req, res) => {
   try {
     // Extract necessary data from request body
     const { jobTitle, jobDescription, interviewDuration, interviewType } =
@@ -48,24 +48,11 @@ Each question should be clear, relevant, and focused on its type.`;
 
     // For demonstration, we will just log the data and send a success response
     res.status(200).json({
-      message: "Interview Questions Generated Successfully",
+      message: "Interview Created & Questions Generated Successfully",
       data: newInterview,
     });
   } catch (err) {
     console.error("OpenAI error:", err);
-    res.status(500).json({ error: "Failed to generate questions" });
+    res.status(500).json({ error: "Failed to Create Interview & generate questions" });
   }
 };
-
-// export const createInterview = (req, res) => {
-//   try {
-//     // Extract interview data from request body
-
-//     res.status(200).json({
-//       message: "Interview created successfully",
-//     });
-//   } catch (error) {
-//     console.error("Error creating interview:", error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
