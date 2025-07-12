@@ -30,10 +30,12 @@ const types = [
 const durations = ["15 minutes", "30 minutes", "45 minutes", "60 minutes"];
 
 const InterviewForm = () => {
+  // States 
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [duration, setDuration] = useState("15 minutes");
-
+  const [selectedTypes, setSelectedTypes] = useState(["Technical"]);
+  const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
 
   //Console logs for debugging
@@ -41,15 +43,13 @@ const InterviewForm = () => {
   console.log(jobDescription, "jobDescription");
   console.log(duration, "duration");
 
-  const [selectedTypes, setSelectedTypes] = useState(["Technical"]);
-  const [loading, setLoading] = useState(false);
-
   const handleToggleType = (type) => {
     setSelectedTypes((prev) =>
       prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     try {
       setLoading(true);
@@ -71,7 +71,6 @@ const InterviewForm = () => {
       setJobTitle("");
       setJobDescription("");
       setDuration("");
-
     }
   };
 

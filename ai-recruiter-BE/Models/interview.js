@@ -1,8 +1,16 @@
 import mongoose from "mongoose";
 
-const interviewSchema = new mongoose.Schema({
+const InterviewSchema = new mongoose.Schema({
+  jobTitle: String,
+  jobDescription: String,
+  interviewType: String,
+  interviewDuration: String,
+  questions: [String], // Array of AI-generated questions
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-})
-
-const Interview = mongoose.model("Interview", interviewSchema);
+const Interview = mongoose.model("Interview", InterviewSchema);
 export default Interview;

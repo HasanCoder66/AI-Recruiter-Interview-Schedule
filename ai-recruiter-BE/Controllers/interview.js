@@ -1,5 +1,6 @@
 // Generate Interview Questions
 
+import Interview from "../Models/interview.js";
 import { generateWithOpenAI } from "../Services/openai.js";
 
 export const generateInterviewQustions = async (req, res) => {
@@ -7,8 +8,10 @@ export const generateInterviewQustions = async (req, res) => {
     // Extract necessary data from request body
     const { jobTitle, jobDescription, interviewDuration, interviewType } =
       req.body;
-
-    console.log(req.body, "Body Data");
+    const formattedTypes = Array.isArray(interviewType)
+      ? interviewType.join(", ")
+      : interviewType;
+    // console.log(req.body, "Body Data");
     // console.log("Job Title", jobTitle);
     // console.log("jobDescription", jobDescription);
     // console.log("interviewDuration", interviewDuration);
@@ -22,18 +25,31 @@ export const generateInterviewQustions = async (req, res) => {
       });
     }
 
-    const prompt = `You are an AI Interviewer. 
-    Generate 8 interview questions for a ${interviewType} interview.
-    Position: ${jobTitle}
+    // Create the prompt for OpenAI
+    const prompt = `You are an Interviewer. 
+Generate ${interviewDuration} worth of interview questions for the following types: ${formattedTypes}.
+Position: ${jobTitle}
 Job Description: ${jobDescription}
-Each question should be clear and concise.
-    `;
+Each question should be clear, relevant, and focused on its type.`;
 
-    const questions = await generateWithOpenAI(prompt)
+    // Call OpenAI
+    const questions = await generateWithOpenAI(prompt);
+
+    // ✅ Save to MongoDB
+    const newInterview = new Interview({
+      jobTitle,
+      jobDescription,
+      interviewType,
+      interviewDuration,
+      questions,
+    });
+
+    await newInterview.save();
+
     // For demonstration, we will just log the data and send a success response
     res.status(200).json({
       message: "Interview Questions Generated Successfully",
-      data: questions,
+      data: newInterview,
     });
   } catch (err) {
     console.error("OpenAI error:", err);
@@ -41,15 +57,15 @@ Each question should be clear and concise.
   }
 };
 
-export const createInterview = (req, res) => {
-  try {
-    // Extract interview data from request body
+// export const createInterview = (req, res) => {
+//   try {
+//     // Extract interview data from request body
 
-    res.status(200).json({
-      message: "Interview created successfully",
-    });
-  } catch (error) {
-    console.error("Error creating interview:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
+//     res.status(200).json({
+//       message: "Interview created successfully",
+//     });
+//   } catch (error) {
+//     console.error("Error creating interview:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
