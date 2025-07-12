@@ -1,25 +1,26 @@
 // console.log("Hello, World!");
 import express from "express";
+import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import { connectDB } from "./Lib/DB.js";
+import interviewRoutes from "./Routes/interview.js";
 
 const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 6000;
 
-const connectDB = async () => {
-  mongoose
-    .connect(process.env.MONGODB_URI, {})
-    .then(() => {
-      console.log("MongoDB connected Successfully");
-    })
-    .catch((err) => {
-      console.error("MongoDB connection failed:", err);
-      process.exit(1);
-    });
-};
 
+// Middlewares
+app.use(express.json());
+app.use(bodyParser.json());
+
+// Routes
+app.use("/api/interview", interviewRoutes)
+
+
+
+//Server Listener
 app.listen(3000, () => {
   connectDB();
   console.log(`Server is running on port ${PORT}`);
