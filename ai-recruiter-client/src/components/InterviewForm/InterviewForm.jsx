@@ -19,7 +19,7 @@ import {
   EmojiObjects,
   Group,
 } from "@mui/icons-material";
-import { BASE_URL } from "../../constants/baseUrl";
+import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 
 const types = [
   { label: "Technical", icon: <Code /> },
@@ -63,7 +63,8 @@ const InterviewForm = () => {
     try {
       setLoading(true);
       const apiRes = await axios.post(
-        `${BASE_URL}/interview/create-interview`,
+        // `${BASE_URL}/interview/create`,
+        `${BASE_URL_PROD}/interview/create`,
         {
           jobTitle,
           jobDescription,
