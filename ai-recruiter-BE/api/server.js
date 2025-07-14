@@ -3,8 +3,8 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-import { connectDB } from "./Lib/DB.js";
-import interviewRoutes from "./Routes/interview.js";
+import { connectDB } from "../Lib/DB.js";
+import interviewRoutes from "../Routes/interview.js";
 
 const app = express();
 
@@ -21,11 +21,17 @@ app.use(
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Routes
+// API Routes
 app.use("/api/interview", interviewRoutes);
+
+// Test Route
+app.get("/api/ping", (req, res) => {
+  res.json({ message: "Backend working from Vercel!" });
+});
 
 //Server Listener
 app.listen(3000, () => {
+  // connect to mongodb
   connectDB();
   console.log(`Server is running on port ${PORT}`);
 });

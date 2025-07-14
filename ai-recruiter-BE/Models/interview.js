@@ -1,3 +1,23 @@
+// import mongoose from "mongoose";
+
+// const InterviewSchema = new mongoose.Schema({
+//   jobTitle: String,
+//   jobDescription: String,
+//   interviewType: [String],
+//   interviewDuration: String,
+//   questions: [String], // Array of AI-generated questions
+//   createdAt: {
+//       type: Date,
+//       default: Date.now,
+//     },
+//     //   timestamps:true,
+// });
+
+// const Interview = mongoose.model("Interview", InterviewSchema);
+// export default Interview;
+
+
+
 import mongoose from "mongoose";
 
 const InterviewSchema = new mongoose.Schema({
@@ -5,12 +25,11 @@ const InterviewSchema = new mongoose.Schema({
   jobDescription: String,
   interviewType: [String],
   interviewDuration: String,
-  questions: [String], // Array of AI-generated questions
+  questions: [String],
   createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    //   timestamps:true,
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Interview = mongoose.model("Interview", InterviewSchema);
