@@ -31,7 +31,7 @@ const types = [
 
 const durations = ["15 minutes", "30 minutes", "45 minutes", "60 minutes"];
 
-const InterviewForm = () => {
+const InterviewForm = ({step, setStep}) => {
   // States
   const [jobTitle, setJobTitle] = useState("");
   const [jobDescription, setJobDescription] = useState("");
@@ -40,7 +40,8 @@ const InterviewForm = () => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
 
-  console.log(questions, "Generated Questions");
+  
+  // console.log(questions, "Generated Questions");
 
   const [toast, setToast] = useState({
     open: false,
@@ -81,6 +82,8 @@ const InterviewForm = () => {
           message: "Interview created and questions generated successfully!",
           severity: "success",
         });
+        // if api is working fine then step should be set to 1
+        setStep(1);
       }
     } catch (error) {
       setToast({
@@ -101,7 +104,8 @@ const InterviewForm = () => {
 
   return (
     <>
-      <form className="space-y-6" onSubmit={handleSubmit}>
+   {step === 0 ? (
+       <form className="space-y-6" onSubmit={handleSubmit}>
         <TextField
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
@@ -205,6 +209,24 @@ const InterviewForm = () => {
           </Button>
         </div>
       </form>
+   ): (
+   // STEP 1: SHOW QUESTIONS
+      <Box className="space-y-4">
+        <Typography variant="h6">Generated Interview Questions</Typography>
+        <ul className="list-decimal pl-6 space-y-2 text-gray-800 text-sm">
+          {questions?.questions?.map((q, i) => (
+            <li key={i}>{q}</li>
+          ))}
+        </ul>
+        <Button
+          variant="contained"
+          onClick={() => setStep(0)}
+          sx={{ mt: 2 }}
+        >
+          Generate Again
+        </Button>
+      </Box>
+   )}
 
       {/* Toast Snackbar */}
       <Snackbar

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout } from "../../components";
 import InterviewForm from "../../components/InterviewForm/InterviewForm";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -9,6 +9,7 @@ import LinearProgress, {
 import { styled } from "@mui/material/styles";
 
 const CreateInterview = () => {
+  const [step, setStep] = useState(0);
   return (
     <Layout>
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
@@ -16,12 +17,17 @@ const CreateInterview = () => {
           <Link to="/">
             <ArrowBackIcon className="mr-2 text-gray-600" />
           </Link>
-          <h2 className="text-xl font-bold">Create New Interview</h2>
+          <h2 className="text-xl font-bold">
+            {step === 0 ? "Create New Interview" : "Interview Questions"}
+          </h2>
         </div>
         <div className="w-full mb-3">
-          <BorderLinearProgress variant="determinate" value={30} />
+          <BorderLinearProgress
+            variant="determinate"
+            value={step === 0 ? 30 : step === 1 ? 60 : 100}
+          />
         </div>
-        <InterviewForm />
+        <InterviewForm step={step} setStep={setStep} />
       </div>
     </Layout>
   );
