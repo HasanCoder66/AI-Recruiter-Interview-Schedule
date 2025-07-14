@@ -1,9 +1,10 @@
 // Images
 
 import mLogo from "./Images/onlyM.png";
+import aiLogin from "./Images/ai-Login.webp";
+import HiringMine from "./Images/hiringMine-logo.webp";
 
 //Gallery Images
-
 
 // Icons
 // import UserVector from "./Icons/UserVector.svg";
@@ -41,7 +42,6 @@ import mLogo from "./Images/onlyM.png";
 //loader
 import wave from "./loader/wave.gif";
 
-
 //MUI ICON
 // import DeleteIcon from "@mui/icons-material/Delete";
 // import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -58,9 +58,4 @@ import wave from "./loader/wave.gif";
 
 // import MaintenanceAnimation from "./animations/maintenance.json";
 
-
-
-export {
-    mLogo,
-    wave
-}
+export { mLogo, wave, aiLogin, HiringMine };

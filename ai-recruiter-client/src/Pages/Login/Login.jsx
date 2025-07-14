@@ -1,23 +1,28 @@
-import React, { useEffect } from "react";
-import { Button, Box, Typography, Paper } from "@mui/material";
+import React from "react";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { Google } from "@mui/icons-material";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import axios from "axios";
-
-// Firebase config (replace with your own)
+import { aiLogin } from "../../assets";
+import { BASE_URL_PROD } from "../../constants/baseUrl";
+import { useNavigate } from "react-router-dom";
+// import na
+// ✅ Your Firebase Config (replace with real values or import from firebase.js)
 const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
+// ✅ Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const Login = ({ onLogin }) => {
+  const navigate = useNavigate();
+
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -31,33 +36,69 @@ const Login = ({ onLogin }) => {
         uid: user.uid,
       };
 
-      // 🔥 Send to backend (store in MongoDB)
-      await axios.post("https://your-backend-url/api/auth/google", userData);
+      // ✅ Send user data to backend
+      await axios.post(
+        // "https://ai-recruiter-interview-schedule-be.vercel.app/api/auth/google",
+        `${BASE_URL_PROD}/auth/google`,
+        userData
+      );
 
-      onLogin(userData);
+      onLogin?.(userData); // optional chaining
+      if(userData) {
+        navigate("/dashboard");
+      }
     } catch (err) {
-      console.error("Google Sign-in Error:", err);
+      console.error("Google Sign-in Error:", err.message);
     }
   };
 
   return (
-    <Box className="flex justify-center items-center min-h-screen bg-gray-100">
+    <Box className="min-h-screen flex items-center justify-center bg-gradient-to-r from-sky-50 to-indigo-100 p-4">
       <Paper
-        elevation={4}
-        className="p-8 max-w-sm w-full text-center space-y-4"
+        elevation={6}
+        className="w-full max-w-4xl flex flex-col md:flex-row overflow-hidden rounded-2xl shadow-lg"
       >
-        <Typography variant="h5" fontWeight="bold">
-          Login to AI Recruiter
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Google />}
-          fullWidth
-          onClick={handleGoogleLogin}
-          sx={{ textTransform: "none" }}
-        >
-          Sign in with Google
-        </Button>
+        {/* Left Image Section */}
+        <Box className="w-full md:w-1/2 bg-indigo-100 flex items-center justify-center p-6">
+          <img
+            src={aiLogin}
+            alt="AI Interview Illustration"
+            className="max-h-72 object-contain"
+          />
+        </Box>
+
+        {/* Right Login Box */}
+        <Box className="w-full md:w-1/2 p-8 space-y-6 flex flex-col justify-center">
+          <div>
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              gutterBottom
+              fontSize={32}
+            >
+              Welcome to AI Recruiter
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Sign in with Google to continue
+            </Typography>
+          </div>
+
+          <Button
+            variant="contained"
+            startIcon={<Google />}
+            onClick={handleGoogleLogin}
+            fullWidth
+            size="large"
+            sx={{
+              textTransform: "none",
+              backgroundColor: "#6851ff",
+              "&:hover": { backgroundColor: "#6111ff" },
+              fontWeight: 600,
+            }}
+          >
+            Sign in with Google
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );
