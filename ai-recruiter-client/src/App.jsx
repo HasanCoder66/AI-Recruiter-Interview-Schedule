@@ -17,6 +17,7 @@ import InterviewSuccess from "./Pages/InterviewSuccess/InterviewSuccess";
 import InterviewSession from "./Pages/InterviewSession/InterviewSession";
 import InterviewDetails from "./Pages/InterviewDetail/InterviewDetail";
 import Login from "./Pages/Login/Login";
+import ProtectedRoute from "./ProtectedRoute/ProtectRoute";
 // import InterviewSession from "./Pages/InterviewSession"; // create this later
 
 const App = () => {
@@ -24,7 +25,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={ <ProtectedRoute><Dashboard /> </ProtectedRoute>} />
         <Route path="/create-interview" element={<CreateInterview />} />
         <Route path="/interview-success" element={<InterviewSuccess />} />
         <Route path="/interview/:id" element={<InterviewSession />} />
