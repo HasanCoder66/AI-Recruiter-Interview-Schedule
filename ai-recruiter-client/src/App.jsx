@@ -39,16 +39,16 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/interview/:id"
           element={
             <ProtectedRoute>
               <InterviewSession />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
-          path="/InterviewDetails"
+          path="/interview/:id"
           element={
             <ProtectedRoute>
               <InterviewDetails />

@@ -1,9 +1,5 @@
-import React from 'react'
-import {
-  AddCircleOutline,
-  Google,
-  VideoCall
-} from "@mui/icons-material";
+import React from "react";
+import { AddCircleOutline, Google, VideoCall } from "@mui/icons-material";
 import CallIcon from "@mui/icons-material/Call";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import { Button, IconButton } from "@mui/material";
@@ -12,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { InterviewCard, Layout } from "../../components";
-import { BASE_URL_PROD } from '../../constants/baseUrl';
+import { BASE_URL_PROD } from "../../constants/baseUrl";
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -35,7 +31,7 @@ const Dashboard = () => {
         ${BASE_URL_PROD}/interview/user/${user?.uid}`);
       setInterviews(res?.data?.data); // update your state
       // console.log("Response aPI",res)
-      console.log(interviews);
+      // console.log(interviews);
     } catch (err) {
       console.error("Failed to fetch user interviews", err);
       setToast({
@@ -49,7 +45,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetchUserInterviews();
   }, []);
-  // Dummy condition — replace with real `interviews` array later
 
   return (
     <Layout>
@@ -81,25 +76,12 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* <h3 className="text-md font-semibold mt-[40px] mb-2">
-          Previously Created Interviews
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <InterviewCard icon={<Google />} date="20 Oct 2024" />
-          <InterviewCard icon={<Facebook />} date="20 Oct 2024" />
-          <InterviewCard
-            icon={<Circle style={{ color: "orange" }} />}
-            date="20 Oct 2024"
-          />
-         
-        </div> */}
-
         <div>
           <h3 className="text-md font-semibold mt-[40px] ">
             Previously Created Interviews
           </h3>
 
-          {interviews.length === 0 ? (
+          {interviews?.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-gradient-to-b from-[#f4f5f7] to-[#c3c6c9] rounded-xl">
               <VideoCall
                 sx={{ fontSize: 40, color: "#6851ff", marginBottom: 1 }}
@@ -130,13 +112,10 @@ const Dashboard = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
               {interviews?.map((item, index) => (
-                <InterviewCard key={index} icon={<Google />} data={item} />
+                <Link to={`/interview/${item._id}`}>
+                  <InterviewCard key={index} icon={<Google />} data={item} />
+                </Link>
               ))}
-              {/* <InterviewCard icon={<Facebook />} date="20 Oct 2024" />
-              <InterviewCard
-                icon={<Circle style={{ color: "orange" }} />}
-                date="20 Oct 2024"
-              /> */}
             </div>
           )}
         </div>
