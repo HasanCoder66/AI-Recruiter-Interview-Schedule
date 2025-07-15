@@ -6,8 +6,6 @@
 
 // export default App;
 
-
-
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -25,11 +23,46 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={ <ProtectedRoute><Dashboard /> </ProtectedRoute>} />
-        <Route path="/create-interview" element={<CreateInterview />} />
-        <Route path="/interview-success" element={<InterviewSuccess />} />
-        <Route path="/interview/:id" element={<InterviewSession />} />
-        <Route path="/InterviewDetails" element={<InterviewDetails />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-interview"
+          element={
+            <ProtectedRoute>
+              <CreateInterview />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/interview-success"
+          element={
+            <ProtectedRoute>
+              <InterviewSuccess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/interview/:id"
+          element={
+            <ProtectedRoute>
+              <InterviewSession />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/InterviewDetails"
+          element={
+            <ProtectedRoute>
+              <InterviewDetails />
+            </ProtectedRoute>
+          }
+        />
         {/* <Route path="/interview-session" element={<InterviewSession />} /> */}
       </Routes>
     </Router>
