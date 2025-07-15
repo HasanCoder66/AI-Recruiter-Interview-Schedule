@@ -1,11 +1,3 @@
-// import Dashboard from "./Pages/Dashoboard/Dashboard";
-// import React from "react";
-// function App() {
-//   return <Dashboard />;
-// }
-
-// export default App;
-
 import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
