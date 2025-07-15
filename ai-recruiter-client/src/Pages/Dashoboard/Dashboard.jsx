@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { InterviewCard, Layout } from "../../components";
+import { BASE_URL_PROD } from '../../constants/baseUrl';
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
