@@ -21,6 +21,7 @@
 import mongoose from "mongoose";
 
 const InterviewSchema = new mongoose.Schema({
+  userId: String,
   jobTitle: String,
   jobDescription: String,
   interviewType: [String],

@@ -202,7 +202,7 @@ const Login = () => {
         name: user?.displayName,
         email: user?.email,
         avatar: user?.photoURL,
-        uid: user?.uid,
+        uid: user?.uid, // 👈 This is the Firebase UID (important)
       };
 
       // api call

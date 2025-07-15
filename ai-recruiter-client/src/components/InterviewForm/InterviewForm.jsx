@@ -20,6 +20,7 @@ import {
   Group,
 } from "@mui/icons-material";
 import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
+import { useSelector } from "react-redux";
 
 const types = [
   { label: "Technical", icon: <Code /> },
@@ -40,7 +41,8 @@ const InterviewForm = ({step, setStep}) => {
   const [loading, setLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
 
-  
+  const {user} = useSelector((state) => state.auth);
+  // console.log(user.uid)
   // console.log(questions, "Generated Questions");
 
   const [toast, setToast] = useState({
@@ -64,13 +66,14 @@ const InterviewForm = ({step, setStep}) => {
     try {
       setLoading(true);
       const apiRes = await axios.post(
-        // `${BASE_URL}/interview/create`,
-        `${BASE_URL_PROD}/interview/create`,
+        `${BASE_URL}/interview/create`,
+        // `${BASE_URL_PROD}/interview/create`,
         {
           jobTitle,
           jobDescription,
           interviewDuration: duration,
           interviewType: selectedTypes.join(", "),
+          uid:user?.uid
         }
       );
       console.log(apiRes, "API Response");

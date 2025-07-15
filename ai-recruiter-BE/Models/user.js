@@ -6,6 +6,14 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: String,
   avatar: String,
+  plan: {
+    type: String,
+    default: 'free' // or 'pro', etc.
+  },
+  interviewsCreated: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now,
