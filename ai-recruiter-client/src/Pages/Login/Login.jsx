@@ -146,8 +146,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/Slices/authSlices";
-import { aiLogin } from "../../assets";
 import { BASE_URL_PROD } from "../../constants/baseUrl";
+// import aiLogin from '../../assets'
+import AILogin from '../../assets/Images/ai-Login.png'
 
 // ✅ Firebase Config from environment
 const firebaseConfig = {
@@ -204,7 +205,7 @@ const Login = () => {
         {/* Left Image Section */}
         <Box className="w-full md:w-1/2 bg-indigo-100 flex items-center justify-center p-6">
           <img
-            src={aiLogin}
+            src={AILogin}
             alt="AI Interview Illustration"
             className="max-h-72 object-contain"
           />

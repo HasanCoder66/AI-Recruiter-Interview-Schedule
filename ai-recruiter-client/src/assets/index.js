@@ -1,8 +1,9 @@
 // Images
 
 import mLogo from "./Images/onlyM.png";
-import aiLogin from "./Images/ai-Login.webp";
-import HiringMine from "./Images/hiringMine-logo.webp";
+// import aiLogin from "./Images/ai-Login.png";
+// import HiringMine from "./Images/hiringMine-logo.png";
+
 
 //Gallery Images
 
@@ -58,4 +59,4 @@ import wave from "./loader/wave.gif";
 
 // import MaintenanceAnimation from "./animations/maintenance.json";
 
-export { mLogo, wave, aiLogin, HiringMine };
+// export { mLogo, wave, aiLogin, HiringMine };
