@@ -66,8 +66,8 @@ const InterviewForm = ({step, setStep}) => {
     try {
       setLoading(true);
       const apiRes = await axios.post(
-        `${BASE_URL}/interview/create`,
-        // `${BASE_URL_PROD}/interview/create`,
+        // `${BASE_URL}/interview/create`,
+        `${BASE_URL_PROD}/interview/create`,
         {
           jobTitle,
           jobDescription,
