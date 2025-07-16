@@ -8,6 +8,7 @@ import InterviewSession from "./Pages/InterviewSession/InterviewSession";
 import InterviewDetails from "./Pages/InterviewDetail/InterviewDetail";
 import Login from "./Pages/Login/Login";
 import ProtectedRoute from "./ProtectedRoute/ProtectRoute";
+import JoinInterview from "./Pages/JoinInterview/JoinInterview";
 // import InterviewSession from "./Pages/InterviewSession"; // create this later
 
 const App = () => {
@@ -55,7 +56,15 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route path="/interview-session" element={<InterviewSession />} /> */}
+        <Route
+          path="/join/interview"
+          element={
+            <ProtectedRoute>
+              <JoinInterview />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/interview-session" element={<InterviewSession />} />
       </Routes>
     </Router>
   );
