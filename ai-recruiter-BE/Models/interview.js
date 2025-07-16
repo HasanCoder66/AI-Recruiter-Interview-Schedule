@@ -1,23 +1,3 @@
-// import mongoose from "mongoose";
-
-// const InterviewSchema = new mongoose.Schema({
-//   jobTitle: String,
-//   jobDescription: String,
-//   interviewType: [String],
-//   interviewDuration: String,
-//   questions: [String], // Array of AI-generated questions
-//   createdAt: {
-//       type: Date,
-//       default: Date.now,
-//     },
-//     //   timestamps:true,
-// });
-
-// const Interview = mongoose.model("Interview", InterviewSchema);
-// export default Interview;
-
-
-
 import mongoose from "mongoose";
 
 const InterviewSchema = new mongoose.Schema({
@@ -27,6 +7,29 @@ const InterviewSchema = new mongoose.Schema({
   interviewType: [String],
   interviewDuration: String,
   questions: [String],
+  // joinCode: {
+  //   type: String,
+  //   unique: true,
+  //   required: true,
+  // },
+  joinCode: {
+  type: String,
+  required: true,
+  unique: true,
+},
+joinURL: {
+  type: String,
+  required: true,
+},
+  candidates: [
+    {
+      name: String,
+      joinedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

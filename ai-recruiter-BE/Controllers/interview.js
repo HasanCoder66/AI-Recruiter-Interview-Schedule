@@ -1,4 +1,6 @@
 // controllers/interview.js
+import { nanoid } from "nanoid";
+import crypto from "crypto";
 import Interview from "../Models/interview.js";
 import User from "../Models/user.js";
 import { generateWithGemini } from "../Services/googleGenerativeai.js";
@@ -47,6 +49,11 @@ Each question should be clear, relevant, and focused on its type.`;
 
     const questions = await generateWithGemini(prompt);
 
+    //  🔐 Generate joinCode
+    const joinCode = crypto.randomBytes(4).toString("hex"); // e.g., '9f83ab2c'
+    const joinURL = `http://localhost:3000/join/${joinCode}`;
+    // const joinURL = `https://localhost:3000/join/${joinCode}`;
+
     const newInterview = new Interview({
       jobTitle,
       jobDescription,
@@ -54,6 +61,8 @@ Each question should be clear, relevant, and focused on its type.`;
       interviewDuration,
       questions,
       userId: user._id,
+      joinCode,
+      joinURL,
     });
 
     await newInterview.save();
@@ -70,6 +79,31 @@ Each question should be clear, relevant, and focused on its type.`;
     res
       .status(500)
       .json({ error: "Failed to Create Interview & generate questions" });
+  }
+};
+
+// Join Interveiw
+export const JoinInterview = async (req, res) => {
+  try {
+    const { joinCode } = req.params;
+    const { name } = req.body;
+
+    const interview = await Interview.findOne({ joinCode });
+    if (!interview) {
+      return res.status(404).json({
+        error: "Interview Not Found",
+      });
+    }
+
+    interview.candidates.push({ name });
+    await interview.save();
+
+    res.status(200).json({
+      success: true,
+      data: interview,
+    });
+  } catch (error) {
+    console.error("Error when Candidate Join Interview", error);
   }
 };
 
@@ -103,7 +137,6 @@ export const getUserInterviews = async (req, res) => {
     });
   }
 };
-
 
 // Get Single Interview
 export const getSingleInterviews = async (req, res) => {
