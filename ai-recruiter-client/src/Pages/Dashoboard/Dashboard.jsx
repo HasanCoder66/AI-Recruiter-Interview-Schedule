@@ -30,7 +30,7 @@ const Dashboard = () => {
       const res = await axios.get(`
         ${BASE_URL_PROD}/interview/user/${user?.uid}`);
       setInterviews(res?.data?.data); // update your state
-      // console.log("Response aPI",res)
+      console.log("Response aPI",res?.data?.data)
       // console.log(interviews);
     } catch (err) {
       console.error("Failed to fetch user interviews", err);
@@ -112,7 +112,9 @@ const Dashboard = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
               {interviews?.map((item, index) => (
-                <Link to={`/interview/${item._id}`}>
+                <Link 
+                // to={`/interview/${item._id}`}
+                >
                   <InterviewCard key={index} icon={<Google />} data={item} />
                 </Link>
               ))}
