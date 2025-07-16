@@ -4,9 +4,13 @@ import crypto from "crypto";
 import Interview from "../Models/interview.js";
 import User from "../Models/user.js";
 import { generateWithGemini } from "../Services/googleGenerativeai.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const CreateInterviewAndGenerateQuestions = async (req, res) => {
   try {
+    const DEV_URL = process.env.DEV_URL;
     const { jobTitle, jobDescription, interviewDuration, interviewType, uid } =
       req.body;
 
@@ -51,7 +55,7 @@ Each question should be clear, relevant, and focused on its type.`;
 
     //  🔐 Generate joinCode
     const joinCode = crypto.randomBytes(4).toString("hex"); // e.g., '9f83ab2c'
-    const joinURL = `http://localhost:5173/join/interview/${joinCode}`;
+    const joinURL = `${DEV_URL}/interview/join/${joinCode}`;
     // const joinURL = `https://localhost:3000/join/${joinCode}`;
 
     const newInterview = new Interview({
@@ -82,30 +86,47 @@ Each question should be clear, relevant, and focused on its type.`;
   }
 };
 
-// Join Interveiw
-export const JoinInterview = async (req, res) => {
-  try {
-    const { joinCode } = req.params;
-    const { name } = req.body;
+// getInterviewByJoinCode
+export const getInterviewByJoinCode = async (req, res) => {
+  const { joinCode } = req.params;
 
+  try {
     const interview = await Interview.findOne({ joinCode });
+
     if (!interview) {
-      return res.status(404).json({
-        error: "Interview Not Found",
-      });
+      return res.status(404).json({ error: "Interview not found" });
     }
 
-    interview.candidates.push({ name });
-    await interview.save();
-
-    res.status(200).json({
-      success: true,
-      data: interview,
-    });
-  } catch (error) {
-    console.error("Error when Candidate Join Interview", error);
+    res.status(200).json({ success: true, data: interview });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch interview" });
   }
 };
+
+// Join Interveiw
+// export const JoinInterview = async (req, res) => {
+//   try {
+//     const { joinCode } = req.params;
+//     const { name } = req.body;
+
+//     const interview = await Interview.findOne({ joinCode });
+//     if (!interview) {
+//       return res.status(404).json({
+//         error: "Interview Not Found",
+//       });
+//     }
+
+//     interview.candidates.push({ name });
+//     await interview.save();
+
+//     res.status(200).json({
+//       success: true,
+//       data: interview,
+//     });
+//   } catch (error) {
+//     console.error("Error when Candidate Join Interview", error);
+//   }
+// };
 
 // // Get All User Interviews
 export const getUserInterviews = async (req, res) => {

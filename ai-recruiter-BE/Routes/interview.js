@@ -3,6 +3,7 @@ import {
   CreateInterviewAndGenerateQuestions,
   getUserInterviews,
   getSingleInterviews,
+  getInterviewByJoinCode,
 } from "../Controllers/interview.js";
 
 const interviewRoutes = express.Router();
@@ -11,5 +12,9 @@ const interviewRoutes = express.Router();
 interviewRoutes.post("/create", CreateInterviewAndGenerateQuestions);
 interviewRoutes.get("/user/:uid", getUserInterviews);
 interviewRoutes.get("/single/:id", getSingleInterviews);
+interviewRoutes.get("/join/:joinCode", getInterviewByJoinCode);
+
+
+
 
 export default interviewRoutes;

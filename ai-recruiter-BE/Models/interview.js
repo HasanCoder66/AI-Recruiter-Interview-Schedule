@@ -7,11 +7,6 @@ const InterviewSchema = new mongoose.Schema({
   interviewType: [String],
   interviewDuration: String,
   questions: [String],
-  // joinCode: {
-  //   type: String,
-  //   unique: true,
-  //   required: true,
-  // },
   joinCode: {
   type: String,
   required: true,

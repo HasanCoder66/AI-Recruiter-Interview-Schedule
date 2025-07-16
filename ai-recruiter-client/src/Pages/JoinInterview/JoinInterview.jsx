@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,8 +13,30 @@ import {
   AccessTime,
   PlayCircleFilledWhite,
 } from "@mui/icons-material";
+import axios from "axios";
+import { Link, useParams } from "react-router-dom";
+import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 
 const JoinInterview = () => {
+  const { joinCode } = useParams();
+  // console.log(joinCode)
+  const [interviewData, setInterviewData] = useState([]);
+
+  const fetchInterviewDetails = async (req, res) => {
+   try {
+      const apiRes = await axios.get(`${BASE_URL}/interview/join/${joinCode}`);
+      console.log(apiRes?.data?.data)
+      setInterviewData(apiRes?.data?.data);
+    } catch (err) {
+      console.error("Failed to fetch interview data:", err);
+    }
+  };
+  
+  useEffect(() => {
+    if (joinCode) {
+      fetchInterviewDetails();
+    }
+  }, [joinCode]);
   return (
     <Box className="min-h-screen flex items-center justify-center bg-[#f9fafb] ">
       <Paper
@@ -27,7 +49,7 @@ const JoinInterview = () => {
           fontWeight="bold"
           className="text-primary mb-2"
         >
-         Mine AI Recruiter
+          Mine AI Recruiter
         </Typography>
         <Typography variant="body2" color="textSecondary" gutterBottom>
           AI-Powered Interview Platform
@@ -42,22 +64,22 @@ const JoinInterview = () => {
 
         {/* Job Info */}
         <Typography variant="h6" fontWeight="bold" className="mb-1">
-          Full Stack Developer Interview
+          {`${interviewData?.jobTitle} Interview`}
         </Typography>
         <Box className="flex items-center gap-2 mb-4 text-sm text-gray-500">
           <Typography variant="body2">Google Inc.</Typography>
           <Divider orientation="vertical" flexItem />
           <Box className="flex items-center gap-1">
             <AccessTime fontSize="small" />
-            <Typography variant="body2">30 Minutes</Typography>
+            <Typography variant="body2">{`${interviewData?.interviewDuration}`}</Typography>
           </Box>
         </Box>
 
         {/* Input Field */}
         <TextField
-        sx={{
-            marginBottom:"10px"
-        }}
+          sx={{
+            marginBottom: "10px",
+          }}
           label="Enter your full name"
           placeholder="e.g., John Smith"
           variant="outlined"
@@ -77,6 +99,8 @@ const JoinInterview = () => {
         </Box>
 
         {/* Buttons */}
+
+        <Link to={"/interview-session"}>
         <Button
           variant="contained"
           fullWidth
@@ -95,7 +119,7 @@ const JoinInterview = () => {
         >
           Join Interview
         </Button>
-
+</Link>
         <Button
           variant="outlined"
           fullWidth

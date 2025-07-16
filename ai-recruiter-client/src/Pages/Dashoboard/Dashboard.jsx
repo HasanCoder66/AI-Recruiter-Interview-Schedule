@@ -30,7 +30,7 @@ const Dashboard = () => {
       const res = await axios.get(`
         ${BASE_URL_PROD}/interview/user/${user?.uid}`);
       setInterviews(res?.data?.data); // update your state
-      console.log("Response aPI",res?.data?.data)
+      // console.log("Response aPI",res?.data?.data)
       // console.log(interviews);
     } catch (err) {
       console.error("Failed to fetch user interviews", err);
