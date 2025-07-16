@@ -10,7 +10,10 @@ dotenv.config();
 
 export const CreateInterviewAndGenerateQuestions = async (req, res) => {
   try {
-    const DEV_URL = process.env.DEV_URL;
+    const DEV_URL =
+      process.env.DEV_URL ||
+      "https://ai-recruiter-interview-schedule.vercel.app/";
+    // console.log(DEV_URL);
     const { jobTitle, jobDescription, interviewDuration, interviewType, uid } =
       req.body;
 
