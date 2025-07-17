@@ -39,15 +39,15 @@ const InterviewSuccess = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">
+            <span className="text-xs text-[#6851ff] font-medium bg-blue-50 px-2 py-1 rounded-full">
               Valid for 30 days
             </span>
             <Button
-              variant="contained"
+              // variant="contained"
               size="small"
               onClick={handleCopy}
               startIcon={<ContentCopy />}
-              sx={{ textTransform: "none" }}
+              sx={{ textTransform: "none", backgroundColor:"#6851ff",color:"white" }}
             >
               Copy Link
             </Button>
@@ -61,7 +61,7 @@ const InterviewSuccess = () => {
           <Button
             variant="outlined"
             startIcon={<Email />}
-            sx={{ textTransform: "none", flex: 1 }}
+            sx={{ textTransform: "none", flex: 1, }}
           >
             Email
           </Button>
@@ -96,7 +96,7 @@ const InterviewSuccess = () => {
         <Link to="/create-interview">
           <Button
             variant="contained"
-            sx={{ textTransform: "none" }}
+            sx={{ textTransform: "none",backgroundColor:"#6851ff",color:"white" }}
           >
             + Create New Interview
           </Button>

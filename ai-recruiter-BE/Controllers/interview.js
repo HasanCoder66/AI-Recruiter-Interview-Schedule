@@ -58,7 +58,7 @@ Each question should be clear, relevant, and focused on its type.`;
 
     //  🔐 Generate joinCode
     const joinCode = crypto.randomBytes(4).toString("hex"); // e.g., '9f83ab2c'
-    const joinURL = `${DEV_URL}interview/join/${joinCode}`;
+    const joinURL = `${DEV_URL}join/${joinCode}`;
     // const joinURL = `https://localhost:3000/join/${joinCode}`;
 
     const newInterview = new Interview({

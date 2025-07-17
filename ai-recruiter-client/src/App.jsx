@@ -57,7 +57,7 @@ const App = () => {
           }
         />
         <Route
-          path="/join/interview/:joinCode"
+          path="/join/:joinCode"
           element={
             <ProtectedRoute>
               <JoinInterview />
