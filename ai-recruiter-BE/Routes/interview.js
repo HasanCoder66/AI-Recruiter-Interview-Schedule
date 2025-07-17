@@ -6,15 +6,12 @@ import {
   getInterviewByJoinCode,
 } from "../Controllers/interview.js";
 
-const interviewRoutes = express.Router();
+const interviewRoute = express.Router();
 
 // Example route for creating an interview
-interviewRoutes.post("/create", CreateInterviewAndGenerateQuestions);
-interviewRoutes.get("/user/:uid", getUserInterviews);
-interviewRoutes.get("/single/:id", getSingleInterviews);
-interviewRoutes.get("/join/:joinCode", getInterviewByJoinCode);
+interviewRoute.post("/create", CreateInterviewAndGenerateQuestions);
+interviewRoute.get("/user/:uid", getUserInterviews);
+interviewRoute.get("/single/:id", getSingleInterviews);
+interviewRoute.get("/join/:joinCode", getInterviewByJoinCode);
 
-
-
-
-export default interviewRoutes;
+export default interviewRoute;

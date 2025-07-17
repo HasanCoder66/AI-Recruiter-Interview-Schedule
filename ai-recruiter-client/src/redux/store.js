@@ -7,14 +7,10 @@
 //   },
 // });
 
-
-
-
-
-
 // src/redux/store.js
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./Slices/authSlices";
+import interviewReducer from "./Slices/interviewSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
@@ -28,6 +24,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  interview: interviewReducer, // ✅ Add interview reducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

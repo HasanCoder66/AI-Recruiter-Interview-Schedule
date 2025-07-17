@@ -171,6 +171,14 @@ const InterviewForm = ({ step, setStep }) => {
             <Box className="flex flex-wrap gap-2">
               {types.map((item) => (
                 <Chip
+                 sx={{
+                // backgroundColor: "#6851ff",
+                // "&:hover": { backgroundColor: "#6811ff" },
+                // textTransform: "none",
+                // borderRadius: 2,
+                // fontWeight: 600,
+                px: 4,
+              }}
                   key={item.label}
                   icon={item.icon}
                   label={item.label}
@@ -213,7 +221,10 @@ const InterviewForm = ({ step, setStep }) => {
           {/* Actions */}
           <div className="flex justify-between">
             <Link to="/">
-              <Button variant="outlined" color="inherit">
+              <Button
+             
+              
+              variant="outlined" color="inherit">
                 Back
               </Button>
             </Link>
@@ -223,7 +234,14 @@ const InterviewForm = ({ step, setStep }) => {
               color="primary"
               endIcon={<span>➔</span>}
               disabled={loading}
-              sx={{ textTransform: "none" }}
+              sx={{
+                backgroundColor: "#6851ff",
+                "&:hover": { backgroundColor: "#6811ff" },
+                textTransform: "none",
+                borderRadius: 2,
+                fontWeight: 600,
+                px: 4,
+              }}
             >
               {loading ? "Generating..." : "Generate Questions"}
             </Button>
@@ -285,7 +303,7 @@ const InterviewForm = ({ step, setStep }) => {
                 px: 4,
               }}
             >
-              Continue
+              Create Interview Link and Finish
             </Button>
             {/* </Link> */}
           </Box>

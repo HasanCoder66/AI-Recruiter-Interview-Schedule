@@ -174,14 +174,14 @@ const InterviewCard = ({ icon, data }) => {
           </Button>
         </Link>
 
-        <Button
+        {/* <Button
           variant="contained"
           size="small"
           startIcon={<Send />}
           sx={{ textTransform: "none", backgroundColor: "#6851FF" }}
         >
           Send
-        </Button>
+        </Button> */}
       </div>
     </Card>
   );

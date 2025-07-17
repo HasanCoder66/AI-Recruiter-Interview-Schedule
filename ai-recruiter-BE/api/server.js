@@ -3,8 +3,9 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import { connectDB } from "../Lib/DB.js";
-import interviewRoutes from "../Routes/interview.js";
 import authRoute from "../Routes/auth.js";
+import candidateRoute from "../Routes/candidate.js";
+import interviewRoute from "../Routes/interview.js";
 
 dotenv.config();
 const app = express();
@@ -22,7 +23,8 @@ app.use(bodyParser.json());
 
 // API Routes
 app.use("/api/auth", authRoute);
-app.use("/api/interview", interviewRoutes);
+app.use("/api/interview", interviewRoute);
+app.use("/api/candidate", candidateRoute);
 
 // Test Route
 app.get("/api/ping", (req, res) => {
