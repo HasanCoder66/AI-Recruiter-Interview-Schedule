@@ -1,21 +1,10 @@
-// import { configureStore } from "@reduxjs/toolkit";
-// import authReducer from "./Slices/authSlices.js";
-
-// export const store = configureStore({
-//   reducer: {
-//     auth: authReducer,
-//   },
-// });
-
 // src/redux/store.js
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import authReducer from "./Slices/authSlices";
 import interviewReducer from "./Slices/interviewSlice";
+import candidateReducer from "./Slices/candidate";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
-
-// Redux thunk (optional, already included in defaultMiddleware)
-import { thunk } from "redux-thunk";
 
 const persistConfig = {
   key: "root",
@@ -25,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   interview: interviewReducer, // ✅ Add interview reducer
+  candidate: candidateReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -11,81 +11,132 @@ import CallEndIcon from "@mui/icons-material/CallEnd";
 import Vapi from "@vapi-ai/web";
 import { useSelector } from "react-redux";
 
-const InterviewSession = () => {
-
-
-// console.log(import.meta.env.VITE_VAPI_PUBLIC_KEY); // Should print a real key
-
-  const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
-  const { questions, currentQuestionIndex } = useSelector(
-    (state) => state.interview
-  );
-  console.log("Questions : ", questions);
-  console.log(questions);
-
-
-  const formattedQuestions = questions.map((q, i) => `${i + 1}. ${q}`).join("\n");
-
-  const assistantOptions = {
-    name: "AI Recruiter",
-    firstMessage:
-      "Hi {{fullName}}, how are you? Ready for your interview on {{jobTitle}}?",
-    transcriber: {
-      provider: "deepgram",
-      model: "nova-2",
-      language: "en-US",
-    },
-   voice: {
-    provider: "playht",
-    voiceId: "Jennifer" // ✅ Only this
-  },
-    model: {
-      provider: "google",
-      model: "models/gemini-2.0-flash-exp",
-      messages: [
-        {
-          role: "system",
-          content: `
-You are an AI voice assistant conducting interviews.
-Your job is to ask candidates provided interview questions, assess their responses.
-Begin the conversation with a friendly introduction, setting a relaxed yet professional tone. Example:
-"Hey there! Welcome to your {{jobTitle}} interview. Let’s get started with a few questions!"
-Ask one question at a time and wait for the candidate’s response before proceeding. Keep the questions clear and concise. Below Are the questions ask one by one:
-Questions: {{formattedQuestions}}
-
-If the candidate struggles, offer hints or rephrase the question without giving away the answer. Example:
-"Need a hint? Think about how React tracks component updates!"
-
-Provide brief, encouraging feedback after each answer. Example:
-"Nice! That’s a solid answer."
-"Hmm, not quite! Want to try again?"
-
-Keep the conversation natural and engaging—use casual phrases like "Alright, next up..." or "Let’s tackle a tricky one!"
-
-After 5-7 questions, wrap up the interview smoothly by summarizing their performance. Example:
-"That was great! You handled some tough questions well. Keep sharpening your skills!"
-
-End on a positive note:
-"Thanks for chatting! Hope to see you crushing projects soon!"
-
-Key Guidelines:
-✅ Be friendly, engaging, and witty
-✅ Keep responses short and natural, like a real conversation
-✅ Adapt based on the candidate’s confidence level
-✅ Ensure the interview remains focused on React
-`.trim(),
-        },
-      ],
-    },
-  };
-
-// STart vapi 
-  useEffect(() => {
-  vapi.start(assistantOptions);
-}, []);
-
+const InterviewSession = ({}) => {
+  // const { questions } = useSelector((state) => state.interview);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const { interviewData, questions } = useSelector((state) => state.interview);
+  const { candidateName } = useSelector((state) => state.candidate);
+
+  const fullName = candidateName;
+  const jobTitle = interviewData?.jobTitle;
+
+  // console.log(candidateName);
+  // console.log("Interview dAta:", interviewData);
+
+  useEffect(() => {
+    if (questions?.length > 0 && candidateName && jobTitle) {
+      const formattedQuestions = questions
+        .map((q, i) => `${i + 1}. ${q}`)
+        .join("\n");
+
+      const assistantOptions = {
+        name: "AI Recruiter",
+        firstMessage: `Hi ${fullName}, how are you? Ready for your interview on ${jobTitle}?`,
+        voice: {
+          provider: "playht",
+          voiceId: "Jennifer",
+        },
+        transcriber: {
+          provider: "deepgram",
+          model: "nova-2",
+          language: "en-US",
+        },
+        model: {
+          provider: "google",
+          model: "gemini-1.5-pro",
+          messages: [
+            {
+              role: "system",
+              content: `
+You are an AI voice assistant conducting interviews.
+Your job is to ask candidates provided interview questions, assess their responses.
+
+Begin with a friendly tone:
+"Hey ${candidateName}! Welcome to your ${jobTitle} interview. Let’s get started with a few questions!"
+
+Ask one question at a time and wait for their answer. Keep it casual and encouraging.
+
+Questions:
+${formattedQuestions}
+
+If the candidate struggles, offer hints like:
+"Need a hint? Think about how React tracks component updates!"
+
+Give short feedback:
+"Nice!", "Good one!", or "Hmm, not quite. Want to try again?"
+
+Wrap up with:
+"Awesome job, ${candidateName}! You handled those ${jobTitle} questions really well. Best of luck!"
+`.trim(),
+            },
+          ],
+        },
+      };
+
+      const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
+      vapi.start(assistantOptions);
+    }
+  }, [questions, candidateName, jobTitle]);
+
+  //   useEffect(() => {
+  //     if (questions?.length > 0) {
+  //       const formattedQuestions = questions
+  //         .map((q, i) => `${i + 1}. ${q}`)
+  //         .join("\n");
+  //       if (!formattedQuestions || formattedQuestions.length === 0) return;
+
+  //       const assistantOptions = {
+  //         name: "AI Recruiter",
+  //         firstMessage: `Hi ${fullName}, how are you? Ready for your interview on ${jobTitle}?`,
+  //         voice: {
+  //           provider: "playht",
+  //           voiceId: "Jennifer",
+  //         },
+
+  //         transcriber: {
+  //           provider: "deepgram",
+  //           model: "nova-2",
+  //           language: "en-US",
+  //         },
+  //         model: {
+  //           provider: "google",
+  //           // model: "gemini-1.5-pro",
+  //             model: "gemini-1.5-pro", // ✅ fixed model name
+  //           messages: [
+  //             {
+  //               role: "system",
+  //               content: `
+  // You are an AI voice assistant conducting interviews.
+  // Your job is to ask candidates provided interview questions, assess their responses.
+
+  // Begin with a friendly tone:
+  // "Hey ${fullName}! Welcome to your ${jobTitle} interview. Let’s get started with a few questions!"
+
+  // Ask one question at a time and wait for their answer. Keep it casual and encouraging.
+
+  // Questions:
+  // ${formattedQuestions}
+
+  // If the candidate struggles, offer hints like:
+  // "Need a hint? Think about how React tracks component updates!"
+
+  // Give short feedback:
+  // "Nice!", "Good one!", or "Hmm, not quite. Want to try again?"
+
+  // Wrap up with:
+  // "Awesome job, ${fullName}! You handled those ${jobTitle} questions really well. Best of luck!"
+  //               `.trim(),
+  //             },
+  //           ],
+  //         },
+  //       };
+
+  //       // const vapi = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
+  //       // vapi.start(assistantOptions);
+  //     }
+  //   }, [questions, fullName, jobTitle]);
 
   return (
     <Box
@@ -116,7 +167,7 @@ Key Guidelines:
         <Typography fontSize={14}>⏱ 00:05:23</Typography>
       </Box>
 
-      {/* Video Section */}
+      {/* Interviewer & Candidate */}
       <Box
         display="flex"
         flexWrap="wrap"
@@ -129,19 +180,17 @@ Key Guidelines:
         {/* AI Interviewer */}
         <Box
           sx={{
-            position: "relative",
             flex: "1 1 300px",
             maxWidth: 450,
             minHeight: 400,
             borderRadius: 3,
             overflow: "hidden",
-            width: "100%",
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+            backgroundColor: "white",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "white",
           }}
         >
           <img
@@ -174,19 +223,17 @@ Key Guidelines:
         {/* You */}
         <Box
           sx={{
-            position: "relative",
             flex: "1 1 300px",
             maxWidth: 450,
             minHeight: 400,
             borderRadius: 3,
             overflow: "hidden",
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-            width: "100%",
+            backgroundColor: "white",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "white",
           }}
         >
           <img
@@ -217,7 +264,7 @@ Key Guidelines:
         </Box>
       </Box>
 
-      {/* Control Buttons */}
+      {/* Controls */}
       <Box display="flex" gap={3} alignItems="center" flexWrap="wrap">
         <IconButton
           sx={{
@@ -241,7 +288,7 @@ Key Guidelines:
         </IconButton>
       </Box>
 
-      {/* Footer Text */}
+      {/* Footer */}
       <Typography
         variant="body2"
         mt={3}

@@ -20,7 +20,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../constants/baseUrl";
 import SubHeader from "../../components/Header/SubHeader";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuestions } from "../../redux/Slices/interviewSlice";
+import {
+  setCandidate,
+  setInterviewData,
+  setQuestions,
+} from "../../redux/Slices/interviewSlice";
+import { setCandidateName } from "../../redux/Slices/candidate";
 
 const JoinInterview = () => {
   // const { questions, currentQuestionIndex } = useSelector(
@@ -32,7 +37,7 @@ const JoinInterview = () => {
   const { joinCode } = useParams();
   const navigate = useNavigate();
 
-  const [interviewData, setInterviewData] = useState([]);
+  const [data, setData] = useState([]);
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -44,9 +49,14 @@ const JoinInterview = () => {
   const fetchInterviewDetails = async () => {
     try {
       const apiRes = await axios.get(`${BASE_URL}/interview/join/${joinCode}`);
-      // console.log(apiRes?.data?.data?.questions)
-      setInterviewData(apiRes?.data?.data);
+      // console.log(apiRes?.data?.data)
+      setData(apiRes?.data?.data);
+      // dispatch(setCandidate(apiRes?.data?.data?.candidate)); // interviewSlice
       dispatch(setQuestions(apiRes?.data?.data?.questions));
+      dispatch(setInterviewData(apiRes?.data?.data));
+      
+      // dispatch(setCandidateJobTitle(apiRes?.data?.data?.candidate.jobTitle));
+      // dispatch(setCandidate(apiRes?.data?.data?.candidate));
     } catch (err) {
       console.error("Failed to fetch interview data:", err);
     }
@@ -74,6 +84,9 @@ const JoinInterview = () => {
 
     try {
       const apiRes = await axios.post(`${BASE_URL}/candidate/`, payload);
+      //  dispatch(setCandidateName(apiRes?.data?));
+      // console.log("API Response:",apiRes?.data?.fullName)
+      dispatch(setCandidateName(apiRes?.data?.fullName)); // candidateSlice
       setSnackbar({
         open: true,
         message: apiRes?.data?.message || "Joined successfully!",
@@ -143,7 +156,7 @@ const JoinInterview = () => {
                 fontWeight="bold"
                 className="text-gray-800 leading-tight"
               >
-                {interviewData?.jobTitle} Interview
+                {data?.jobTitle} Interview
               </Typography>
 
               <Box className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm text-gray-600">
@@ -158,7 +171,7 @@ const JoinInterview = () => {
                 />
                 <Box className="flex items-center gap-1">
                   <AccessTime fontSize="small" />
-                  <span>{interviewData?.interviewDuration}</span>
+                  <span>{data?.interviewDuration}</span>
                 </Box>
               </Box>
             </Box>
