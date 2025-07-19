@@ -154,7 +154,7 @@ const InterviewCard = ({ icon, data }) => {
           onClick={handleCopy}
           sx={{ textTransform: "none", color: "#6851FF" }}
         >
-          Copy Link
+          Interview Link
         </Button>
 
         {copied && (

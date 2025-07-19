@@ -9,6 +9,7 @@ import InterviewDetails from "./Pages/InterviewDetail/InterviewDetail";
 import Login from "./Pages/Login/Login";
 import ProtectedRoute from "./ProtectedRoute/ProtectRoute";
 import JoinInterview from "./Pages/JoinInterview/JoinInterview";
+import CandidateReportCard from "./Pages/CandidateReportCard/CandidateReportCard";
 // import InterviewSession from "./Pages/InterviewSession"; // create this later
 
 const App = () => {
@@ -29,6 +30,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <CreateInterview />{" "}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/candidate-report"
+          element={
+            <ProtectedRoute>
+              <CandidateReportCard />{" "}
             </ProtectedRoute>
           }
         />

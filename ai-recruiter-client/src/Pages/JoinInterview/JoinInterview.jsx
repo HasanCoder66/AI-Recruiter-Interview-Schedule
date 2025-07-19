@@ -121,7 +121,7 @@ const JoinInterview = () => {
       <Box className="min-h-screen flex items-center justify-center bg-[#f9fafb] px-4">
         <Paper
           elevation={4}
-          className="w-full max-w-2xl p-10 rounded-3xl flex flex-col items-center shadow-xl ring-1 ring-gray-200"
+          className="w-full max-w-3xl p-10 rounded-3xl flex flex-col items-center shadow-xl ring-1 ring-gray-200"
         >
           {/* Logo + Illustration + Job Info Landscape Style */}
           <Box className="w-full flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16 mb-10 px-4 md:px-8">

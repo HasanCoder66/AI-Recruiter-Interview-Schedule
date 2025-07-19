@@ -194,6 +194,8 @@ const InterviewDetails = () => {
                         size="small"
                         sx={{ fontWeight: 500 }}
                       />
+                     <Link to={"/candidate-report"}>
+                     
                       <Button
                         variant="outlined"
                         size="small"
@@ -201,6 +203,7 @@ const InterviewDetails = () => {
                       >
                         View Report
                       </Button>
+                     </Link>
                     </>
                   ) : (
                     <>
