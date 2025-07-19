@@ -1,7 +1,27 @@
 import Candidate from "../Models/candidate.js";
 import Interview from "../Models/interview.js";
 
-const createCandidate = async (req, res) => {
+
+export const getCandidatesByInterviewId = async (req, res) => {
+  const { interviewId } = req.params;
+
+  try {
+    const candidates = await Candidate.find({ interviewId }).sort({ joinedAt: -1 });
+
+    return res.status(200).json({
+      totalCandidates: candidates.length,
+      candidates,
+    });
+  } catch (error) {
+    console.error("Error fetching candidates:", error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+
+
+export const createCandidate = async (req, res) => {
   const { fullName, joinCode } = req.body;
 
   try {
@@ -34,5 +54,7 @@ const createCandidate = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 export default createCandidate;

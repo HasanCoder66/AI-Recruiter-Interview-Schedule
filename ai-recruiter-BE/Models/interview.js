@@ -8,23 +8,29 @@ const InterviewSchema = new mongoose.Schema({
   interviewDuration: String,
   questions: [String],
   joinCode: {
-  type: String,
-  required: true,
-  unique: true,
-},
-joinURL: {
-  type: String,
-  required: true,
-},
+    type: String,
+    required: true,
+    unique: true,
+  },
+  joinURL: {
+    type: String,
+    required: true,
+  },
   candidates: [
     {
-      name: String,
-      joinedAt: {
-        type: Date,
-        default: Date.now,
-      },
+      fullName: String,
+      joinedAt: { type: Date, default: Date.now },
     },
   ],
+  // candidates: [
+  //   {
+  //     name: String,
+  //     joinedAt: {
+  //       type: Date,
+  //       default: Date.now,
+  //     },
+  //   },
+  // ],
   createdAt: {
     type: Date,
     default: Date.now,
