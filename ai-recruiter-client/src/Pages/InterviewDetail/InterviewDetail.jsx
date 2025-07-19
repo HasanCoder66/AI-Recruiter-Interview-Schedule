@@ -53,7 +53,7 @@ const InterviewDetails = () => {
     fetchInterviewDetails();
   }, [id]);
   return (
-    <Box className=" rounded-2xl shadow-lg space-y-8">
+    <Box className=" rounded-2xl shadow-lg space-y-8 bg-gray-100">
       {/* Header */}
 
       <Box
@@ -62,6 +62,8 @@ const InterviewDetails = () => {
           justifyContent: "space-between",
           boxShadow: 5,
           padding: 2,
+          backgroundColor:"white"
+          // position:"sticky"
         }}
       >
 <Link to="/dashboard">
@@ -94,7 +96,7 @@ const InterviewDetails = () => {
           paddingX: 5,
         }}
       >
-        <Box className="flex justify-between items-start mb-3">
+        <Box className="flex justify-between items-start mb-3 mx-auto p-6 bg-white shadow-lg rounded-xl">
           <Box>
             <Typography variant="h5" fontWeight={"bold"}>
               {interviewDetail?.data?.jobTitle}
@@ -107,7 +109,7 @@ const InterviewDetails = () => {
         </Box>
 
         {/* Meta Info */}
-        <Box className="flex flex-wrap gap-6 text-sm mb-3">
+        <Box className="flex flex-wrap gap-6 text-sm mb-3 mx-auto p-6 bg-white shadow-lg rounded-xl">
           <Box className="flex items-center gap-2">
             <AccessTime fontSize="small" />
             <span className="font-medium">
@@ -129,11 +131,14 @@ const InterviewDetails = () => {
         </Box>
 
         {/* Description */}
-        <Box>
+        <Box className="mx-auto p-6 bg-white shadow-lg rounded-xl mb-3 ">
           <Typography
             variant="subtitle1"
             fontWeight={"bold"}
             marginBottom={0.5}
+            sx={{
+              fontSize:{xs:20, sm:20, md: 22, lg:24,xl:24}
+            }}
           >
             Job Description
           </Typography>
@@ -146,13 +151,17 @@ const InterviewDetails = () => {
         </Box>
 
         {/* Interview Questions */}
-        <Box>
-          <Typography fontWeight={"bold"} variant="subtitle1" marginBottom={1}>
+        <Box className="mx-auto p-6 bg-white shadow-lg rounded-xl m">
+          <Typography 
+           sx={{
+              fontSize:{xs:20, sm:20, md: 22, lg:24,xl:24}
+            }}
+          fontWeight={"bold"} variant="subtitle1" margin={1}>
             Interview Questions
           </Typography>
-          <ul className="list-disc pl-5 space-y-1 text-sm mb-5">
+          <ul className="">
             {interviewDetail?.data?.questions.map((q, i) => (
-              <li key={i}>{q}</li>
+              <li className="mx-auto p-6 bg-white shadow-lg rounded-xl list-none mb-3 text-lmd" key={i}>{q}</li>
             ))}
           </ul>
         </Box>
