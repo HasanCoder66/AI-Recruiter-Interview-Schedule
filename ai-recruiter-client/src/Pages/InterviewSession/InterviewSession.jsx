@@ -349,10 +349,10 @@ const InterviewSession = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const { interviewData, questions } = useSelector((state) => state.interview);
-  const fullName = useSelector((state) => state?.candidate?.fullName);
+  const {candidateName} = useSelector((state) => state?.candidate);
 
   // console.log(fullName)
-  // const fullName = candidateName || "Candidate";
+  const fullName = candidateName || "Candidate";
   const jobTitle = interviewData?.jobTitle || "Software Engineer";
   // console.log(fullName)
 
