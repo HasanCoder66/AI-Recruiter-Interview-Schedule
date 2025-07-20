@@ -17,7 +17,7 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../constants/baseUrl";
+import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 import SubHeader from "../../components/Header/SubHeader";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -48,7 +48,7 @@ const JoinInterview = () => {
 
   const fetchInterviewDetails = async () => {
     try {
-      const apiRes = await axios.get(`${BASE_URL}/interview/join/${joinCode}`);
+      const apiRes = await axios.get(`${BASE_URL_PROD}/interview/join/${joinCode}`);
       // console.log(apiRes?.data?.data)
       setData(apiRes?.data?.data);
       // dispatch(setCandidate(apiRes?.data?.data?.candidate)); // interviewSlice
@@ -83,7 +83,7 @@ const JoinInterview = () => {
     };
 
     try {
-      const apiRes = await axios.post(`${BASE_URL}/candidate/`, payload);
+      const apiRes = await axios.post(`${BASE_URL_PROD}/candidate/`, payload);
       //  dispatch(setCandidateName(apiRes?.data?));
       // console.log("API Response:",apiRes?.data?.fullName)
       dispatch(setCandidateName(apiRes?.data?.fullName)); // candidateSlice
