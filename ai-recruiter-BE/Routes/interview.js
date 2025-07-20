@@ -4,6 +4,7 @@ import {
   getUserInterviews,
   getSingleInterviews,
   getInterviewByJoinCode,
+  getAllInterviews,
 } from "../Controllers/interview.js";
 
 const interviewRoute = express.Router();
