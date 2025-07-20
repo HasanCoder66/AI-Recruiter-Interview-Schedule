@@ -107,8 +107,25 @@ export const getInterviewByJoinCode = async (req, res) => {
 };
 
 
+// get all interviews
+export const getAllInterviews = async (req, res) => {
+  try {
+   const interviews = await Interview.find()
 
+   if(!interviews) return res.status(404).json({
+    success:false,
+    message :"Interviews Not Found"
+   })
 
+   res.status(200).json({
+    success:true,
+    data:interviews
+
+   })
+  } catch (error) {
+    console.log("Error:", error.message)
+  }
+}
 
 
 

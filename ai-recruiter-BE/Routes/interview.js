@@ -13,5 +13,6 @@ interviewRoute.post("/create", CreateInterviewAndGenerateQuestions);
 interviewRoute.get("/user/:uid", getUserInterviews);
 interviewRoute.get("/single/:id", getSingleInterviews);
 interviewRoute.get("/join/:joinCode", getInterviewByJoinCode);
+interviewRoute.get("/all", getAllInterviews);
 
 export default interviewRoute;
