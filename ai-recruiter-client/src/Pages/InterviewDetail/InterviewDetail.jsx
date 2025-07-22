@@ -18,39 +18,56 @@ import {
 } from "@mui/icons-material";
 import { Link, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { BASE_URL_PROD } from "../../constants/baseUrl";
+import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 
 const InterviewDetails = () => {
   const { id } = useParams();
   const [interviewDetail, setInterviewDetail] = useState(null);
   console.log(interviewDetail);
+  const [candidates , setCandidates] = useState([])
+  const [candidatesLength , setCandidatesLength] = useState()
+  console.log(candidates, "Candidate UseState")
   const fetchInterviewDetails = async () => {
     try {
       const apiRes = await axios.get(`${BASE_URL_PROD}/interview/single/${id}`);
-      console.log(apiRes.data);
+      // console.log(apiRes.data);
       setInterviewDetail(apiRes?.data);
     } catch (error) {
       console.error("Error Fetching interview Details:", error);
     }
   };
 
+  const fetchCandidatesByInterviewID = async (req, res) => {
+    try {
+      const apiRes = await axios.get(`${BASE_URL_PROD}/candidate/interview/${id}`)
+      // console.log("REs",apiRes)
+      console.log("api response line 41",apiRes?.data)
+      setCandidates(apiRes?.data?.candidates)
+      setCandidatesLength(apiRes?.data?.totalCandidates)
 
-  const candidates = [
-    {
-      name: "Michael Chen",
-      date: "Oct 20, 2025",
-      score: 8.5,
-      status: "Completed",
-    },
-    {
-      name: "Sarah Williams",
-      date: "Oct 27, 2025",
-      status: "Pending",
-    },
-  ];
+    } catch (error) {
+      console.log("Error:", error.message)
+    }
+  }
+
+
+  // const candidates = [
+  //   {
+  //     name: "Michael Chen",
+  //     date: "Oct 20, 2025",
+  //     score: 8.5,
+  //     status: "Completed",
+  //   },
+  //   {
+  //     name: "Sarah Williams",
+  //     date: "Oct 27, 2025",
+  //     status: "Pending",
+  //   },
+  // ];
 
   useEffect(() => {
     fetchInterviewDetails();
+    fetchCandidatesByInterviewID()
   }, [id]);
   return (
     <Box className=" rounded-2xl shadow-lg space-y-8 bg-gray-100">
@@ -181,11 +198,11 @@ const InterviewDetails = () => {
               >
                 <Box marginBottom={2} className="flex items-center gap-4">
                   <Avatar sx={{ bgcolor: "#1976d2", color: "#fff" }}>
-                    {cand.name.charAt(0)}
+                    {/* {cand.name.charAt(0)} */}
                   </Avatar>
                   <Box>
                     <Typography className="font-medium text-sm text-gray-800">
-                      {cand.name}
+                      {cand.fullName}
                     </Typography>
                     <Typography className="text-xs text-gray-500">
                       {cand.status === "Completed"
