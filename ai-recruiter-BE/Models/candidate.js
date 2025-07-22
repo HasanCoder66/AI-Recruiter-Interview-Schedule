@@ -22,6 +22,18 @@ const candidateSchema = new mongoose.Schema({
     type: String,
     default: "", // optional: AI generated or initials-based avatar
   },
+  answers: [
+  {
+    question: String,
+    answer: String,
+  }
+],
+score: Number,
+status: {
+  type: String,
+  enum: ["Pending", "Completed"],
+  default: "Pending"
+}
 });
 
 export default mongoose.model("Candidate", candidateSchema);

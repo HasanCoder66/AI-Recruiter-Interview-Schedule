@@ -23,10 +23,10 @@ import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 const InterviewDetails = () => {
   const { id } = useParams();
   const [interviewDetail, setInterviewDetail] = useState(null);
-  console.log(interviewDetail);
+  // console.log(interviewDetail);
   const [candidates , setCandidates] = useState([])
   const [candidatesLength , setCandidatesLength] = useState()
-  console.log(candidates, "Candidate UseState")
+  // console.log(candidates, "Candidate UseState")
   const fetchInterviewDetails = async () => {
     try {
       const apiRes = await axios.get(`${BASE_URL_PROD}/interview/single/${id}`);
@@ -41,7 +41,7 @@ const InterviewDetails = () => {
     try {
       const apiRes = await axios.get(`${BASE_URL_PROD}/candidate/interview/${id}`)
       // console.log("REs",apiRes)
-      console.log("api response line 41",apiRes?.data)
+      // console.log("api response line 41",apiRes?.data)
       setCandidates(apiRes?.data?.candidates)
       setCandidatesLength(apiRes?.data?.totalCandidates)
 

@@ -25,13 +25,14 @@ import {
   setInterviewData,
   setQuestions,
 } from "../../redux/Slices/interviewSlice";
-import { setCandidateName } from "../../redux/Slices/candidate";
+import { setCandidateId, setCandidateName } from "../../redux/Slices/candidate";
 
 const JoinInterview = () => {
-  // const { questions, currentQuestionIndex } = useSelector(
-  //   (state) => state.interview
-  // );
-  // console.log("Questions : ", questions);
+  const { interviewData } = useSelector((state) => state?.interview);
+  const interviewId = interviewData?._id;
+
+  // console.log(interviewData?._id)
+  // console.log("id : ", questions);
   // console.log("currentQuestionIndex : ", currentQuestionIndex);
   const dispatch = useDispatch();
   const { joinCode } = useParams();
@@ -39,6 +40,7 @@ const JoinInterview = () => {
 
   const [data, setData] = useState([]);
   const [fullName, setFullName] = useState("");
+  // console.log(fullName)
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -48,13 +50,15 @@ const JoinInterview = () => {
 
   const fetchInterviewDetails = async () => {
     try {
-      const apiRes = await axios.get(`${BASE_URL_PROD}/interview/join/${joinCode}`);
+      const apiRes = await axios.get(
+        `${BASE_URL_PROD}/interview/join/${joinCode}`
+      );
       // console.log(apiRes?.data?.data)
       setData(apiRes?.data?.data);
       // dispatch(setCandidate(apiRes?.data?.data?.candidate)); // interviewSlice
       dispatch(setQuestions(apiRes?.data?.data?.questions));
       dispatch(setInterviewData(apiRes?.data?.data));
-      
+
       // dispatch(setCandidateJobTitle(apiRes?.data?.data?.candidate.jobTitle));
       // dispatch(setCandidate(apiRes?.data?.data?.candidate));
     } catch (err) {
@@ -80,13 +84,15 @@ const JoinInterview = () => {
     const payload = {
       joinCode,
       fullName,
+      interviewId,
     };
 
     try {
       const apiRes = await axios.post(`${BASE_URL_PROD}/candidate/`, payload);
       //  dispatch(setCandidateName(apiRes?.data?));
-      // console.log("API Response:",apiRes?.data?.fullName)
+      // console.log("API Response:",apiRes?.data)
       dispatch(setCandidateName(apiRes?.data?.fullName)); // candidateSlice
+      dispatch(setCandidateId(apiRes?.data?.candidateId)); // candidateSlice
       setSnackbar({
         open: true,
         message: apiRes?.data?.message || "Joined successfully!",

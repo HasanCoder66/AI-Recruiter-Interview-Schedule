@@ -129,67 +129,67 @@ export const getAllInterviews = async (req, res) => {
 
 
 
-export const getInterviewWithVapiSession = async (req, res) => {
-  const { joinCode } = req.params;
+// export const getInterviewWithVapiSession = async (req, res) => {
+//   const { joinCode } = req.params;
 
-  try {
-    // STEP 1: Find interview
-    const interview = await Interview.findOne({ joinCode });
+//   try {
+//     // STEP 1: Find interview
+//     const interview = await Interview.findOne({ joinCode });
 
-    if (!interview) {
-      return res.status(404).json({ error: "Interview not found" });
-    }
+//     if (!interview) {
+//       return res.status(404).json({ error: "Interview not found" });
+//     }
 
-    const questions = interview.questions || [];
+//     const questions = interview.questions || [];
 
-    // STEP 2: Format messages for VAPI (first welcome, then questions)
-    const welcomeMessages = [
-      {
-        role: "user",
-        content: `Hello! I'm your virtual interviewer for today. Let's get started in a moment.`,
-      },
-      {
-        role: "user",
-        content: `I will ask you a few interview questions. Please answer clearly when prompted. Ready?`,
-      },
-    ];
+//     // STEP 2: Format messages for VAPI (first welcome, then questions)
+//     const welcomeMessages = [
+//       {
+//         role: "user",
+//         content: `Hello! I'm your virtual interviewer for today. Let's get started in a moment.`,
+//       },
+//       {
+//         role: "user",
+//         content: `I will ask you a few interview questions. Please answer clearly when prompted. Ready?`,
+//       },
+//     ];
 
-    const questionMessages = questions.map((q, i) => ({
-      role: "user",
-      content: `Question ${i + 1}: ${q}`,
-    }));
+//     const questionMessages = questions.map((q, i) => ({
+//       role: "user",
+//       content: `Question ${i + 1}: ${q}`,
+//     }));
 
-    const allMessages = [...welcomeMessages, ...questionMessages];
+//     const allMessages = [...welcomeMessages, ...questionMessages];
 
-    // STEP 3: Call VAPI to create a conversation
-    const vapiRes = await axios.post(
-      "https://api.vapi.ai/conversation", // replace with actual VAPI endpoint if needed
-      {
-        agentId: process.env.VAPI_AGENT_ID,
-        messages: allMessages,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.VAPI_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+//     // STEP 3: Call VAPI to create a conversation
+//     const vapiRes = await axios.post(
+//       "https://api.vapi.ai/conversation", // replace with actual VAPI endpoint if needed
+//       {
+//         agentId: process.env.VAPI_AGENT_ID,
+//         messages: allMessages,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${process.env.VAPI_API_KEY}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    const vapiData = vapiRes.data;
+//     const vapiData = vapiRes.data;
 
-    // STEP 4: Return all together
-    return res.status(200).json({
-      success: true,
-      interview,
-      vapiSessionId: vapiData.id, // or .conversationId depending on VAPI format
-    });
+//     // STEP 4: Return all together
+//     return res.status(200).json({
+//       success: true,
+//       interview,
+//       vapiSessionId: vapiData.id, // or .conversationId depending on VAPI format
+//     });
 
-  } catch (err) {
-    console.error("Error in VAPI Interview API:", err);
-    res.status(500).json({ error: "Failed to start interview session" });
-  }
-};
+//   } catch (err) {
+//     console.error("Error in VAPI Interview API:", err);
+//     res.status(500).json({ error: "Failed to start interview session" });
+//   }
+// };
 
 
 

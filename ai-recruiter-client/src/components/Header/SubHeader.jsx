@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 const SubHeader = () => {
   const {params} = useParams()
-  console.log(params)
+  // console.log(params)
   return (
     <div>
       <div className="w-full flex items-center h-[50px]  mx-auto p-6 bg-white shadow-lg fixed">
