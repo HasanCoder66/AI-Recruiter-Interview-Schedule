@@ -62,49 +62,61 @@ export const createCandidate = async (req, res) => {
 
 
 
-// @desc    Submit candidate answers
-// @route   PUT /candidate/submit/:id
-// @access  Public (or Authenticated based on your setup)
+
 export const submitInterviewAnswers = async (req, res) => {
   const { id } = req.params;
   const { answers } = req.body;
 
-  if (!answers || !Array.isArray(answers)) {
-    return res.status(400).json({ message: "Invalid or missing answers array." });
-  }
-
   try {
-    // Example scoring logic: 2 points per answered question
     const score = answers.length * 2;
 
-    const updatedCandidate = await Candidate.findByIdAndUpdate(
+    const updated = await Candidate.findByIdAndUpdate(
       id,
       {
         $set: {
-          answers,
-          score,
+          answers: answers,
+          score: score,
           status: "Completed",
         },
       },
       { new: true }
     );
 
-    if (!updatedCandidate) {
-      return res.status(404).json({ message: "Candidate not found." });
-    }
-
-    res.status(200).json({
-      message: "Answers submitted successfully.",
-      candidate: updatedCandidate,
-    });
+    res.status(200).json(updated);
   } catch (error) {
-    console.error("Error submitting answers:", error);
-    res.status(500).json({
-      message: "Failed to save answers. Please try again later.",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Failed to save answers", error });
   }
 };
+
+
+
+
+
+// export const submitInterviewAnswers = async (req, res) => {
+//   const { id } = req.params;
+//   const { answers } = req.body;
+
+//   try {
+//     const candidate = await Candidate.findById(id);
+
+//     if (!candidate) {
+//       return res.status(404).json({ message: "Candidate not found." });
+//     }
+
+//     const score = answers.length * 2; // Score logic
+
+//     candidate.answers = answers;
+//     candidate.score = score;
+//     candidate.status = "Completed";
+
+//     const updated = await candidate.save();
+
+//     res.status(200).json(updated);
+//   } catch (error) {
+//     console.error("❌ Error saving candidate answers:", error);
+//     res.status(500).json({ message: "Failed to save answers", error });
+//   }
+// };
 
 // export const submitInterviewAnswers = async (req, res) => {
 //   const { id } = req.params;
