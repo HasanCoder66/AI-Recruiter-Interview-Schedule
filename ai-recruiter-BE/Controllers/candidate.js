@@ -89,9 +89,9 @@ export const createCandidate = async (req, res) => {
 // Submit Interviews answers /
 export const submitInterviewAnswers = async (req, res) => {
   const { candidateId } = req.params; // Candidate ID
-  console.log(candidateId);
+  // console.log(candidateId);
   const { answers } = req.body;
-  console.log(answers);
+  // console.log(answers);
 
   try {
     if (!answers || answers.length === 0) {
