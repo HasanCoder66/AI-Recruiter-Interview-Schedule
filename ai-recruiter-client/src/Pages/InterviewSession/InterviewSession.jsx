@@ -791,17 +791,17 @@
 //         {isCallActive ? "Interview in progress..." : "Click to start interview"}
 //       </Typography>
 
-//       {/* Snackbar */}
-//       <Snackbar
-//         open={openSnackbar}
-//         autoHideDuration={2000}
-//         onClose={() => setOpenSnackbar(false)}
-//         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-//       >
-//         <Alert severity="info" sx={{ width: "100%" }}>
-//           {snackbarMsg}
-//         </Alert>
-//       </Snackbar>
+      // {/* Snackbar */}
+      // <Snackbar
+      //   open={openSnackbar}
+      //   autoHideDuration={2000}
+      //   onClose={() => setOpenSnackbar(false)}
+      //   anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      // >
+      //   <Alert severity="info" sx={{ width: "100%" }}>
+      //     {snackbarMsg}
+      //   </Alert>
+      // </Snackbar>
 
 //       <style>{`
 //         @keyframes pulse {
@@ -816,7 +816,7 @@
 
 // export default InterviewSession;
 
-import { BASE_URL } from "../../constants/baseUrl";
+import { BASE_URL, BASE_URL_PROD } from "../../constants/baseUrl";
 import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
@@ -839,6 +839,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setFeedbackData } from "../../redux/Slices/candidate";
 import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
 
 const InterviewSession = () => {
   const theme = useTheme();
@@ -852,6 +853,8 @@ const InterviewSession = () => {
   const timerRef = useRef(null);
   const vapiRef = useRef(null);
   const [feedback, setFeedback] = useState({});
+  // const [openSnackbar,setOpenSnackbar] = useState("")
+  // const [snackbarMsg,setSnackbarMsg] = useState("")
   // console.log(feedback);
   const { interviewData, questions } = useSelector((state) => state?.interview);
   const { candidateName, candidateId } = useSelector(
@@ -978,10 +981,11 @@ End with: "Great job ${fullName}! Best of luck. Generating your interview summar
       stopTimer();
       setIsCallActive(false);
 
+
       // console.log("Final QA pairs:", qaPairs);
       // qaPairs
       if (qaPairs.length > 0) {
-        await axios.put(`${BASE_URL}/candidate/submit/${candidateId}`, {
+        await axios.put(`${BASE_URL_PROD}/candidate/submit/${candidateId}`, {
           answers: [{ question: qaPairs?.question, answer: qaPairs?.answer }],
         });
         console.log("✅ Answers saved successfully");
@@ -991,14 +995,19 @@ End with: "Great job ${fullName}! Best of luck. Generating your interview summar
 
       // generate feedback
       const generateFeedback = await axios.post(
-        `${BASE_URL}/candidate/feedback/${candidateId}`
+        `${BASE_URL_PROD}/candidate/feedback/${candidateId}`
       );
 
       // console.log("✅ Feedback generated", generateFeedback?.data?.feedback);
       setFeedback(generateFeedback?.data?.feedback);
+
+      // ✅ Show Snackbar
+    // setSnackbarMsg("Interview ended successfully");
+    // setOpenSnackbar(true);
+
       setTimeout(() => {
         navigate(`/candidate-report/${candidateId}`);
-      }, 1500);
+      }, 2200);
       dispatch(setFeedbackData(generateFeedback?.data?.feedback));
     } catch (err) {
       console.error("Error saving answers or generating feedback:", err);
@@ -1240,6 +1249,18 @@ End with: "Great job ${fullName}! Best of luck. Generating your interview summar
           </DialogActions>
         </Dialog>
 
+ {/* Snackbar */}
+      {/* <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="info" sx={{ width: "100%" }}>
+          {snackbarMsg}
+        </Alert>
+      </Snackbar> */}
+      
         <style>
           {`
             @keyframes pulse {
