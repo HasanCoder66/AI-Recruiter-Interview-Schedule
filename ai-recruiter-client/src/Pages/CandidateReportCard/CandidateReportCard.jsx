@@ -127,7 +127,7 @@ const CandidateReportCard = () => {
     const getInterview = async () => {
       try {
         const response = await axios.get(`${BASE_URL_PROD}/interview/single/${interviewId}`)
-        console.log(response?.data?.data)
+        // console.log(response?.data?.data)
         setJobTitle(response?.data?.data?.jobTitle)
       } catch (error) {
        console.error(error) 
