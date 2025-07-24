@@ -8,7 +8,7 @@ const SubHeader = () => {
   // console.log(params)
   return (
     <div>
-      <div className="w-full flex items-center h-[50px]  mx-auto p-6 bg-white shadow-lg fixed">
+      <div className="w-full flex items-center h-[50px]  mx-auto p-6 bg-white shadow-lg sticky">
         <Link to="/">
           <ArrowBackIcon className="m-4 text-gray-600 " />
         </Link>

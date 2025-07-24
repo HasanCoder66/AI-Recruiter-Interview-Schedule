@@ -34,7 +34,7 @@ const App = () => {
           }
         />
         <Route
-          path="/candidate-report"
+          path="/candidate-report/:candidateId"
           element={
             <ProtectedRoute>
               <CandidateReportCard />{" "}

@@ -51,19 +51,6 @@ const InterviewDetails = () => {
   }
 
 
-  // const candidates = [
-  //   {
-  //     name: "Michael Chen",
-  //     date: "Oct 20, 2025",
-  //     score: 8.5,
-  //     status: "Completed",
-  //   },
-  //   {
-  //     name: "Sarah Williams",
-  //     date: "Oct 27, 2025",
-  //     status: "Pending",
-  //   },
-  // ];
 
   useEffect(() => {
     fetchInterviewDetails();
@@ -220,7 +207,7 @@ const InterviewDetails = () => {
                         size="small"
                         sx={{ fontWeight: 500 }}
                       />
-                     <Link to={"/candidate-report"}>
+                     <Link to={`/candidate-report/${cand?._id}`}>
                      
                       <Button
                         variant="outlined"

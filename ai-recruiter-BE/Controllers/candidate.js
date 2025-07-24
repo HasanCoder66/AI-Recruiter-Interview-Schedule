@@ -1,12 +1,15 @@
 import Candidate from "../Models/candidate.js";
 import Interview from "../Models/interview.js";
+import { generateWithGemini } from "../Services/googleGenerativeai.js";
 
-
+// Get Candidates by interview id
 export const getCandidatesByInterviewId = async (req, res) => {
   const { interviewId } = req.params;
 
   try {
-    const candidates = await Candidate.find({ interviewId }).sort({ joinedAt: -1 });
+    const candidates = await Candidate.find({ interviewId }).sort({
+      joinedAt: -1,
+    });
 
     return res.status(200).json({
       totalCandidates: candidates.length,
@@ -18,9 +21,37 @@ export const getCandidatesByInterviewId = async (req, res) => {
   }
 };
 
+// Get Candidate by id
+export const getCandidateById = async (req, res) => {
+  try {
+    const { candidateId } = req.params;
 
+    if (!candidateId)
+      return res.status(400).json({
+        message: "Candidate Id is required",
+      });
 
+    const candidate = await Candidate.findById(candidateId);
 
+    if (!candidate)
+      return res.status(404).json({
+        message: "Candidate not Found",
+      });
+
+    res.status(200).json({
+      success: true,
+      message: candidate,
+    });
+  } catch (error) {
+    console.log("Error :", error.message);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Create Candidate
 export const createCandidate = async (req, res) => {
   const { fullName, joinCode } = req.body;
 
@@ -55,93 +86,111 @@ export const createCandidate = async (req, res) => {
   }
 };
 
-
-
-// controllers/candidateController.js
-
-
-
-
-
+// Submit Interviews answers /
 export const submitInterviewAnswers = async (req, res) => {
-  const { id } = req.params;
+  const { candidateId } = req.params; // Candidate ID
+  console.log(candidateId);
   const { answers } = req.body;
+  console.log(answers);
 
   try {
-    const score = answers.length * 2;
+    if (!answers || answers.length === 0) {
+      return res.status(400).json({ message: "Answers are required" });
+    }
 
-    const updated = await Candidate.findByIdAndUpdate(
-      id,
-      {
-        $set: {
-          answers: answers,
-          score: score,
-          status: "Completed",
-        },
-      },
-      { new: true }
-    );
+    const candidate = await Candidate.findById(candidateId);
 
-    res.status(200).json(updated);
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    // ✅ Calculate score (example: 2 points per answer)
+    // const score = answers.length * 2;
+
+    candidate.answers = answers;
+    // candidate.score = score;
+    candidate.status = "Completed";
+
+    await candidate.save();
+
+    return res.status(200).json({
+      message: "Answers submitted successfully",
+      candidate,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to save answers", error });
+    console.error("Error saving answers:", error);
+    return res.status(500).json({ message: "Failed to save answers", error });
   }
 };
 
+// Generate Candidate Feedback
+export const generateCandidateFeedback = async (req, res) => {
+  const { candidateId } = req.params;
 
+  try {
+    const candidate = await Candidate.findById(candidateId).populate(
+      "interviewId"
+    );
 
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
 
+    if (!candidate.answers || candidate.answers.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No answers found for this candidate" });
+    }
 
-// export const submitInterviewAnswers = async (req, res) => {
-//   const { id } = req.params;
-//   const { answers } = req.body;
+    const jobTitle = candidate.interviewId?.jobTitle || "Unknown Role";
 
-//   try {
-//     const candidate = await Candidate.findById(id);
+    // ✅ Build Gemini prompt for structured JSON response
+    const prompt = `
+Analyze this interview and provide a JSON response:
+Candidate Name: ${candidate.fullName}
+Job Title: ${jobTitle}
+Answers:
+${candidate.answers
+  .map((a, i) => `Q${i + 1}: ${a.question}\nA: ${a.answer}`)
+  .join("\n")}
 
-//     if (!candidate) {
-//       return res.status(404).json({ message: "Candidate not found." });
-//     }
+Return JSON only:
+{
+  "overallRating": number,
+  "skills": [
+    {"label":"Technical Skills","score":number},
+    {"label":"Problem Solving","score":number},
+    {"label":"Communication","score":number},
+    {"label":"Experience","score":number}
+  ],
+  "summary": "Short summary",
+  "recommendation": "Recommended for Hire or Not Recommended",
+  "recommendationReason": "Explain why"
+}
+`;
 
-//     const score = answers.length * 2; // Score logic
+    // ✅ Call Gemini service
+    const feedback = await generateWithGemini(prompt, "feedback");
 
-//     candidate.answers = answers;
-//     candidate.score = score;
-//     candidate.status = "Completed";
+    // try {
+    //   feedback = JSON.parse(feedbackRaw); // Ensure valid JSON
+    // } catch (err) {
+    //   console.error("Error parsing Gemini response:", err);
+    //   return res.status(500).json({ message: "Invalid AI response" });
+    // }
 
-//     const updated = await candidate.save();
+    // ✅ Save feedback in DB
+    candidate.feedback = feedback;
+    await candidate.save();
+    // candidate.feedback = feedback;
+    // await candidate.save();
 
-//     res.status(200).json(updated);
-//   } catch (error) {
-//     console.error("❌ Error saving candidate answers:", error);
-//     res.status(500).json({ message: "Failed to save answers", error });
-//   }
-// };
-
-// export const submitInterviewAnswers = async (req, res) => {
-//   const { id } = req.params;
-//   const { answers } = req.body;
-
-//   try {
-//     const score = answers.length * 2; // Example logic (2 points per question)
-
-//     const updated = await Candidate.findByIdAndUpdate(
-//       id,
-//       {
-//         $set: {
-//           answers: answers,
-//           score: score,
-//           status: "Completed",
-//         },
-//       },
-//       { new: true }
-//     );
-
-//     res.status(200).json(updated);
-//   } catch (error) {
-//     res.status(500).json({ message: "Failed to save answers", error });
-//   }
-// };
-
-
-export default createCandidate;
+    return res.status(200).json({
+      message: "Feedback generated successfully",
+      feedback,
+    });
+  } catch (error) {
+    console.error("Error generating feedback:", error);
+    res.status(500).json({ message: "Failed to generate feedback" });
+  }
+};

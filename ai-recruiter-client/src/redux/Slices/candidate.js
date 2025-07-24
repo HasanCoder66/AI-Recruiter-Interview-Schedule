@@ -7,6 +7,7 @@ const candidateSlice = createSlice({
     candidateName: "",
     candidateId: "",
     jobTitle: "", // ✅ Add this
+    feedback : {},
   },
   reducers: {
     setCandidateName: (state, action) => {
@@ -18,9 +19,12 @@ const candidateSlice = createSlice({
     setJobTitle: (state, action) => {
       state.jobTitle = action.payload; // ✅ Add this reducer
     },
+    setFeedbackData: (state, action) => {
+      state.feedback = action.payload; // ✅ Add this reducer
+    },
   },
 });
 
-export const { setCandidateName, setJobTitle, setCandidateId } =
+export const { setCandidateName, setJobTitle, setCandidateId, setFeedbackData } =
   candidateSlice.actions;
 export default candidateSlice.reducer;

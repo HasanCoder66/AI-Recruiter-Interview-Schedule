@@ -1,80 +1,4 @@
-// // services/gemini.js
-// import dotenv from "dotenv";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-
-// dotenv.config();
-
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// export const generateWithGemini = async (prompt) => {
-//   try {
-//     // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp",
-//     //      systemInstruction: `You are an AI Interviewer. Your task is to analyze job descriptions and generate structured job posting data. Always return data in the following JSON format with all fields:`
-//     //  });
-
-//     const model = genAI.getGenerativeModel({
-//       model: "models/gemini-2.0-flash-exp",
-//       systemInstruction: `
-// You are a professional AI Interviewer assistant.
-
-// Your job is to analyze job titles, job descriptions, and interview types, and generate 10 relevant, creative, and challenging interview questions.
-
-// Each question must be based on the job context and role expectations.
-
-// Respond only with a JSON array in the following format:
-// [
-//   "Question 1?",
-//   "Question 2?",
-//   "Question 3?",
-//   "Question 4?",
-//   "Question 5?",
-//   "Question 6?",
-//   "Question 7?",
-//   "Question 8?",
-//   "Question 9?",
-//   "Question 10?"
-// ]
-
-// Do not return explanations, labels, markdown, or any surrounding text — only raw JSON array.
-// `,
-//     });
-
-//     const result = await model.generateContent(prompt);
-//     const response = await result.response;
-//     const raw = response.text();
-
-//     // const questions = raw
-//     //   .split("\n")
-//     //   .map((q) => q.trim())
-//     //   .filter((q) => q.length > 0);
-//     const questions = JSON.parse(text); // ✅ now it's a clean JSON array
-//     if (!Array.isArray(questions) || questions.length === 0) {
-//       throw new Error("No questions generated or invalid format.");
-//     }
-
-//     return questions;
-//   } catch (error) {
-//     console.error("Gemini API Error:", error);
-//     throw new Error("Failed to generate questions from Gemini");
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// // services/googleGenerativeai.js
 // import dotenv from "dotenv";
 // import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -91,114 +15,27 @@
 
 // Your job is to analyze job titles, job descriptions, and interview types, and generate 10 relevant, creative, and challenging interview questions.
 
-// Each question must be based on the job context and role expectations.
-
-// Respond only with a JSON array in the following format:
-// [
-//   "Question 1?",
-//   "Question 2?",
-//   "Question 3?",
-//   "Question 4?",
-//   "Question 5?",
-//   "Question 6?",
-//   "Question 7?",
-//   "Question 8?",
-//   "Question 9?",
-//   "Question 10?"
-// ]
-
-// Do not return explanations, labels, markdown, or any surrounding text — only raw JSON array.
+// Respond ONLY with a JSON array of questions — no explanations, no markdown, just the array.
 //       `,
 //     });
 
 //     const result = await model.generateContent(prompt);
 //     const response = await result.response;
-//     const text = response.text(); // ✅ Renamed from raw → text
+//     const rawText = await response.text();
 
-//     const questions = JSON.parse(text); // ✅ this now works
-//     if (!Array.isArray(questions) || questions.length === 0) {
-//       throw new Error("No questions generated or invalid format.");
-//     }
-
-//     return questions;
-//   } catch (error) {
-//     console.error("Gemini API Error:", error);
-//     throw new Error("Failed to generate questions from Gemini");
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// services/gemini.js
-// import dotenv from "dotenv";
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-
-// dotenv.config();
-
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-// export const generateWithGemini = async (prompt) => {
-//   try {
-//     const model = genAI.getGenerativeModel({
-//       model: "models/gemini-2.0-flash-exp",
-//       systemInstruction: `
-// You are a professional AI Interviewer assistant.
-
-// Your job is to analyze job titles, job descriptions, and interview types, and generate 10 relevant, creative, and challenging interview questions.
-
-// Each question must be based on the job context and role expectations.
-
-// Respond only with a JSON array in the following format:
-// [
-//   "Question 1?",
-//   "Question 2?",
-//   "Question 3?",
-//   "Question 4?",
-//   "Question 5?",
-//   "Question 6?",
-//   "Question 7?",
-//   "Question 8?",
-//   "Question 9?",
-//   "Question 10?"
-// ]
-
-// Do not return explanations, labels, markdown, or any surrounding text — only raw JSON array.
-//       `,
-//     });
-
-//     const result = await model.generateContent(prompt);
-//     const response = await result.response;
-//     const text = await response.text(); // ✅ Awaited because .text() is async in some environments
+//     // 🔥 Clean markdown formatting if present
+//     const cleaned = rawText
+//       .replace(/```json/g, "")
+//       .replace(/```/g, "")
+//       .trim();
 
 //     let questions;
+
 //     try {
-//       questions = JSON.parse(text);
-//     } catch (parseErr) {
-//       console.error("JSON Parse Error:", parseErr);
+//       questions = JSON.parse(cleaned);
+//     } catch (err) {
+//       console.error("JSON Parse Error:", err);
+//       console.log("Raw Gemini Response:", rawText); // Optional: for debugging
 //       throw new Error("Invalid response format from Gemini. Expected JSON array.");
 //     }
 
@@ -214,6 +51,78 @@
 // };
 
 
+
+
+
+
+
+
+
+// // services/googleGenerativeai.js
+// import dotenv from "dotenv";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
+
+// dotenv.config();
+
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// /**
+//  * Generate structured data using Gemini
+//  * @param {string} prompt - The content to process
+//  * @param {string} mode - "questions" or "feedback"
+//  */
+// export const generateWithGemini = async (prompt, mode = "questions") => {
+//   try {
+//     const systemInstruction =
+//       mode === "questions"
+//         ? `
+// You are a professional AI Interviewer assistant.
+// Your job is to analyze job titles, job descriptions, and interview types, and generate 10 relevant, creative, and challenging interview questions.
+// Respond ONLY with a JSON array of questions — no explanations, no markdown, just the array.
+// `
+//         : `
+// You are an AI recruiter assistant. Analyze the candidate's answers and create an evaluation.
+// Respond ONLY with JSON in the format:
+// {
+//   "overallRating": number,
+//   "skills": [
+//     {"label":"Technical Skills","score":number},
+//     {"label":"Problem Solving","score":number},
+//     {"label":"Communication","score":number},
+//     {"label":"Experience","score":number}
+//   ],
+//   "summary": "Short summary (max 3 sentences)",
+//   "recommendation": "Recommended for Hire or Not Recommended",
+//   "recommendationReason": "Explain why"
+// }
+// `;
+
+//     const model = genAI.getGenerativeModel({
+//       model: "models/gemini-2.0-flash-exp",
+//       systemInstruction,
+//     });
+
+//     const result = await model.generateContent(prompt);
+//     const response = await result.response;
+//     const rawText = await response.text();
+
+//     const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+
+//     let parsed;
+//     try {
+//       parsed = JSON.parse(cleaned);
+//     } catch (err) {
+//       console.error("JSON Parse Error:", err);
+//       console.log("Raw Gemini Response:", rawText);
+//       throw new Error("Invalid JSON response from Gemini");
+//     }
+
+//     return parsed;
+//   } catch (error) {
+//     console.error("Gemini API Error:", error.message);
+//     throw new Error("Gemini request failed");
+//   }
+// };
 
 
 
@@ -246,46 +155,60 @@ dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-export const generateWithGemini = async (prompt) => {
+/**
+ * @param {string} prompt - The text prompt for Gemini
+ * @param {"questions"|"feedback"} mode - Mode: generate questions or feedback
+ */
+export const generateWithGemini = async (prompt, mode = "questions") => {
   try {
+    const systemInstruction =
+      mode === "questions"
+        ? `
+You are a professional AI Interview Assistant.
+Generate 10 relevant and challenging interview questions based on the job role and description.
+Return ONLY a JSON array of questions (no extra text).
+Example:
+["What is React?", "Explain event loop in JavaScript"]
+`
+        : `
+You are an expert recruiter and AI evaluator.
+Analyze candidate answers and provide a structured JSON report in this exact format:
+{
+  "overallRating": 8.5,
+  "skills": [
+    { "label": "Technical Skills", "score": 9 },
+    { "label": "Problem Solving", "score": 8 },
+    { "label": "Communication", "score": 8.5 },
+    { "label": "Experience", "score": 8 }
+  ],
+  "summary": "Candidate demonstrated strong technical proficiency and clear communication.",
+  "recommendation": "Recommended for hire"
+}
+`;
+
     const model = genAI.getGenerativeModel({
       model: "models/gemini-2.0-flash-exp",
-      systemInstruction: `
-You are a professional AI Interviewer assistant.
-
-Your job is to analyze job titles, job descriptions, and interview types, and generate 10 relevant, creative, and challenging interview questions.
-
-Respond ONLY with a JSON array of questions — no explanations, no markdown, just the array.
-      `,
+      systemInstruction,
     });
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const rawText = await response.text();
 
-    // 🔥 Clean markdown formatting if present
-    const cleaned = rawText
-      .replace(/```json/g, "")
-      .replace(/```/g, "")
-      .trim();
+    const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
 
-    let questions;
-
+    let parsed;
     try {
-      questions = JSON.parse(cleaned);
+      parsed = JSON.parse(cleaned);
     } catch (err) {
       console.error("JSON Parse Error:", err);
-      console.log("Raw Gemini Response:", rawText); // Optional: for debugging
-      throw new Error("Invalid response format from Gemini. Expected JSON array.");
+      console.log("Raw Gemini Response:", rawText);
+      throw new Error(`Invalid JSON response from Gemini in ${mode} mode`);
     }
 
-    if (!Array.isArray(questions) || questions.length === 0) {
-      throw new Error("No questions generated or invalid format.");
-    }
-
-    return questions;
+    return parsed;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Failed to generate questions from Gemini");
+    throw new Error(`Failed to generate ${mode} using Gemini`);
   }
 };

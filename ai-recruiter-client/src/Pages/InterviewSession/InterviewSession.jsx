@@ -392,12 +392,7 @@
 
 // export default InterviewSession;
 
-
-
-
-
-
-
+import { BASE_URL } from "../../constants/baseUrl";
 import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
@@ -416,32 +411,36 @@ import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import Vapi from "@vapi-ai/web";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { setFeedbackData } from "../../redux/Slices/candidate";
 
 const InterviewSession = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [qaPairs, setQaPairs] = useState([]);
   const [isActiveUser, setIsActiveUser] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [duration, setDuration] = useState(0);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCallActive, setIsCallActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const timerRef = useRef(null);
   const vapiRef = useRef(null);
-
+  const [feedback, setFeedback] = useState({});
+  // console.log(feedback);
   const { interviewData, questions } = useSelector((state) => state?.interview);
-  const { candidateName } = useSelector((state) => state?.candidate);
+  const { candidateName, candidateId } = useSelector(
+    (state) => state?.candidate
+  );
+  const dispatch = useDispatch();
 
   const fullName = candidateName || "Candidate";
   const jobTitle = interviewData?.jobTitle || "Software Engineer";
 
-  // ✅ Initialize Vapi once
+  /** ✅ Initialize Vapi and listeners */
   useEffect(() => {
     vapiRef.current = new Vapi(import.meta.env.VITE_VAPI_PUBLIC_KEY);
 
-    // Event Listeners
     vapiRef.current.on("call-start", () => {
       console.log("✅ Call Started");
       setIsCallActive(true);
@@ -456,23 +455,45 @@ const InterviewSession = () => {
 
     vapiRef.current.on("speech-start", () => setIsActiveUser(false));
     vapiRef.current.on("speech-end", () => setIsActiveUser(true));
-    vapiRef.current.on("message", (message) => {
-      console.log("message :",message?.conversation) 
-      console.log("message :",message?.messages) 
+
+    /** ✅ Handle conversation updates */
+    vapiRef.current.on("message", (msg) => {
+      if (
+        msg.type === "conversation-update" &&
+        Array.isArray(msg.conversation)
+      ) {
+        // console.log("Conversation msg:", msg);
+        // console.log("Conversation Updated:", msg.conversation);
+
+        // Build Q&A pairs
+        const conv = msg.conversation;
+        const pairs = [];
+        for (let i = 0; i < conv.length; i++) {
+          if (conv[i].role === "assistant") {
+            const question = conv[i].content;
+            const answer =
+              i + 1 < conv.length && conv[i + 1].role === "user"
+                ? conv[i + 1].content
+                : "";
+            pairs.push({ question, answer });
+          }
+        }
+        setQaPairs(pairs);
+        // console.log("Updated QA Pairs:", pairs);
+      }
     });
 
     return () => {
-      // Cleanup on unmount
       vapiRef.current?.stop();
       stopTimer();
     };
   }, []);
 
-  // ✅ Start Call
+  /** ✅ Start the call */
   const startCall = () => {
     if (!vapiRef.current) return;
 
-    const formattedQuestions = questions?.map((q) => ` ${q}`).join(",");
+    const formattedQuestions = questions?.map((q) => `${q}`).join(", ");
     const assistantOptions = {
       name: "AI Recruiter",
       voice: { provider: "playht", voiceId: "Jennifer" },
@@ -485,22 +506,17 @@ const InterviewSession = () => {
           {
             role: "system",
             content: `
-You are a smart and friendly AI recruiter conducting a voice-based interview.
-
-Start by greeting the candidate and waiting for their response.
-Then say: "Welcome to your ${jobTitle} interview. Let's get started."
+You are an AI recruiter conducting a voice-based interview.
+Start with a friendly greeting.
+Then say: "Welcome to your ${jobTitle} interview. Let's begin."
 
 Ask questions one by one:
 ${formattedQuestions}
 
-Wait for their full response before moving on.
-
-If they hesitate, say:
-"It’s okay. Shall we move to the next question?"
-
-End with:
-"Great work ${fullName}! Best of luck. Generating your interview summary now."
-`.trim(),
+Wait for complete answers before moving on.
+If the candidate hesitates, say: "It’s okay. Shall we move to the next question?"
+End with: "Great job ${fullName}! Best of luck. Generating your interview summary now."
+            `.trim(),
           },
         ],
       },
@@ -509,16 +525,37 @@ End with:
     vapiRef.current.start(assistantOptions);
   };
 
-  // ✅ Stop Call
-  const stopInterview = () => {
-    if (vapiRef.current) {
-      vapiRef.current.stop();
-      console.log("🔴 Interview Ended by user");
+  /** ✅ Stop interview & submit answers */
+  const stopInterview = async () => {
+    try {
+      if (vapiRef.current) vapiRef.current.stop();
+      stopTimer();
+      setIsCallActive(false);
+
+      // console.log("Final QA pairs:", qaPairs);
+      // qaPairs
+      if (qaPairs.length > 0) {
+        await axios.put(`${BASE_URL}/candidate/submit/${candidateId}`, {
+          answers: [{ question: qaPairs?.question, answer: qaPairs?.answer }],
+        });
+        console.log("✅ Answers saved successfully");
+      } else {
+        console.warn("⚠ No answers to save");
+      }
+
+      // generate feedback
+      const generateFeedback = await axios.post(
+        `${BASE_URL}/candidate/feedback/${candidateId}`
+      );
+      console.log("✅ Feedback generated", generateFeedback?.data?.feedback);
+      setFeedback(generateFeedback?.data?.feedback);
+      dispatch(setFeedbackData(generateFeedback?.data?.feedback));
+    } catch (err) {
+      console.error("Error saving answers or generating feedback:", err);
     }
-    stopTimer();
-    setIsCallActive(false);
   };
 
+  /** ✅ Dialog handlers */
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
   const handleConfirmStop = () => {
@@ -526,7 +563,7 @@ End with:
     handleCloseDialog();
   };
 
-  // ✅ Timer
+  /** ✅ Timer */
   const startTimer = () => {
     clearInterval(timerRef.current);
     setDuration(0);
@@ -541,22 +578,44 @@ End with:
   };
 
   const formatTime = (sec) => {
-    const minutes = Math.floor(sec / 60).toString().padStart(2, "0");
+    const minutes = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
     const seconds = (sec % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
   };
 
-  // ✅ Toggle Mic
+  // /** ✅ Toggle Mic */
+  // const toggleMic = () => {
+  //   if (!vapiRef.current) return;
+  //   setIsMicOn((prev) => {
+  //     const newState = !prev;
+  //     vapiRef.current.setMicrophoneEnabled(newState);
+  //     return newState;
+  //   });
+  // };
+
   const toggleMic = () => {
     if (!vapiRef.current) return;
     setIsMicOn((prev) => {
       const newState = !prev;
-      vapiRef.current.setMicrophoneEnabled(newState);
+
+      if (typeof vapiRef.current.updateMicrophone === "function") {
+        vapiRef.current.updateMicrophone({ enabled: newState });
+      } else if (
+        vapiRef.current.call &&
+        typeof vapiRef.current.call.update === "function"
+      ) {
+        vapiRef.current.call.update({ microphone: newState });
+      } else {
+        console.warn("Microphone toggle not supported in current Vapi version");
+      }
+
       return newState;
     });
   };
 
-  // Auto-start call when interviewData is ready
+  /** ✅ Auto-start call when data ready */
   useEffect(() => {
     if (interviewData && questions?.length) {
       startCall();
@@ -564,8 +623,7 @@ End with:
   }, [interviewData]);
 
   return (
-
-      <Box
+    <Box
       className="bg-gray-100"
       sx={{
         minHeight: "100vh",
@@ -592,7 +650,7 @@ End with:
         </Typography>
       </Box>
 
-      {/* Interviewer & Candidate Boxes */}
+      {/* Interviewer & Candidate */}
       <Box
         display="flex"
         flexWrap="wrap"
@@ -602,6 +660,7 @@ End with:
         maxWidth="1000px"
         mb={4}
       >
+        {/* AI */}
         <Box
           sx={{
             flex: "1 1 300px",
@@ -644,6 +703,7 @@ End with:
           </Typography>
         </Box>
 
+        {/* Candidate */}
         <Box
           sx={{
             flex: "1 1 300px",
@@ -705,16 +765,13 @@ End with:
           sx={{
             backgroundColor: "#EF4444",
             color: "white",
-            "&:hover": {
-              backgroundColor: "#7f1d1d", // Even darker on hover
-            },
+            "&:hover": { backgroundColor: "#7f1d1d" },
           }}
           size="large"
         >
           <CallEndIcon />
         </IconButton>
 
-        {/* Confirmation Dialog */}
         <Dialog open={openDialog} onClose={handleCloseDialog}>
           <DialogTitle>End Interview?</DialogTitle>
           <DialogContent>
@@ -733,39 +790,20 @@ End with:
           </DialogActions>
         </Dialog>
 
-        {/* Keyframes Animation */}
         <style>
           {`
-          @keyframes pulse {
-            0% {
-              transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(104, 81, 255, 0.7);
+            @keyframes pulse {
+              0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(104, 81, 255, 0.7); }
+              70% { transform: scale(1.1); box-shadow: 0 0 20px 10px rgba(104, 81, 255, 0); }
+              100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(104, 81, 255, 0); }
             }
-            70% {
-              transform: scale(1.1);
-              box-shadow: 0 0 20px 10px rgba(104, 81, 255, 0);
-            }
-            100% {
-              transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(104, 81, 255, 0);
-            }
-          }
-        `}
+          `}
         </style>
       </Box>
 
-      {/* Countdown/Status */}
-      {isLoading ? (
-        <Typography variant="h6" mt={3}>
-          Interview starts in {countdown}...
-        </Typography>
-      ) : (
-        <Typography variant="body2" mt={3} sx={{ color: "#94A3B8" }}>
-          {isCallActive
-            ? "Interview in progress..."
-            : "Click to start interview"}
-        </Typography>
-      )}
+      <Typography variant="body2" mt={3} sx={{ color: "#94A3B8" }}>
+        {isCallActive ? "Interview in progress..." : "Click to start interview"}
+      </Typography>
     </Box>
   );
 };
