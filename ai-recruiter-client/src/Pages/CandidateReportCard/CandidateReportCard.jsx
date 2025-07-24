@@ -116,7 +116,7 @@ const CandidateReportCard = () => {
 
   const fetchFeedback = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/candidate/${candidateId}`);
+        const res = await axios.get(`${BASE_URL_PROD}/candidate/${candidateId}`);
         setData(res?.data?.message);
         setInterviewId(res?.data?.message?.interviewId)
       } catch (err) {
@@ -126,7 +126,7 @@ const CandidateReportCard = () => {
 
     const getInterview = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/interview/single/${interviewId}`)
+        const response = await axios.get(`${BASE_URL_PROD}/interview/single/${interviewId}`)
         console.log(response?.data?.data)
         setJobTitle(response?.data?.data?.jobTitle)
       } catch (error) {
