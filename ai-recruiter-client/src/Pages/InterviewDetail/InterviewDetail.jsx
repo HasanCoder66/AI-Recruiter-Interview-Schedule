@@ -160,7 +160,7 @@ const InterviewDetails = () => {
             </Box>
 
             {/* Interview Questions */}
-            <Box className="mx-auto p-6 bg-white shadow-lg rounded-xl m">
+            <Box className="mx-auto p-6 bg-white shadow-lg rounded-xl h-[400px] overflow-auto">
               <Typography
                 sx={{
                   fontSize: { xs: 20, sm: 20, md: 22, lg: 24, xl: 24 },
@@ -194,7 +194,7 @@ const InterviewDetails = () => {
               <Typography marginTop={2} variant="subtitle1">
                 Candidates ({candidates.length})
               </Typography>
-              <Box className="space-y-4 ">
+              <Box className="space-y-4 h-[300px] overflow-auto bg-white p-4 rounded-2xl shadow-md">
                 {candidates.map((cand, i) => (
                   <Box
                     key={i}
